@@ -22,6 +22,7 @@ Player player;
 Arena arena;
 bool show_axes;
 bool active_light[] = {true, true, true, true, true, true, true, true};
+int window_width, window_height;
 
 void load_arena_from_file(const char* path) {
     tinyxml2::XMLDocument level;
@@ -79,16 +80,16 @@ void load_arena_from_file(const char* path) {
     // }
 }
 
-void init(int windowSize, const char* path) {
+void init(int window_width, int window_height, const char* path) {
     glClearColor (0.0, 0.0, 0.0, 0.0);
     glShadeModel (GL_SMOOTH);
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
-    glViewport (0, 0, (GLsizei)windowSize, (GLsizei)windowSize);
+    glViewport (0, 0, (GLsizei)window_width, (GLsizei)window_height);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (50, (GLfloat)windowSize/windowSize, 1, 500);
+    gluPerspective (50, (GLfloat)window_width/window_height, 1, 500);
 
     load_arena_from_file(path);
 }
@@ -161,8 +162,8 @@ float clamp(float val, float low, float high) {
 }
 
 void mouse_move(int x, int y) {
-    float dphi = -2*M_PI*((float)(x - last_x)/500);
-    float dtheta = M_PI*((float)(y - last_y)/500);
+    float dphi = -2*M_PI*((float)(x - last_x)/window_width);
+    float dtheta = M_PI*((float)(y - last_y)/window_height);
 
     phi = last_phi + dphi;
     theta = last_theta + dtheta;
@@ -274,11 +275,13 @@ int main(int argc, char** argv) {
         return 0;
     }
 
+    window_width = window_height = 1000;
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(window_width, window_width);
     glutCreateWindow("Trabalho 3D");
-    init(500, argv[1]);
+    init(window_width, window_height, argv[1]);
     glutDisplayFunc(display);
     glutIdleFunc(idle);
     glutMotionFunc(mouse_move);
