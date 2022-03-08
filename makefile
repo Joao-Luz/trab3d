@@ -9,12 +9,7 @@ all: $(TARGET)
 
 SRC = src/main.cpp \
 	  src/Arena.cpp \
-	  src/Axes.cpp \
-	  src/Box.cpp \
 	  src/Camera.cpp \
-	  src/LightSource.cpp \
-	  src/Plane.cpp \
-	  src/Player.cpp \
 	  src/Objects/Axes.cpp \
 	  src/Objects/Box.cpp \
 	  src/Objects/LightSource.cpp \
@@ -24,12 +19,7 @@ SRC = src/main.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
-		  include/Axes.h \
-		  include/Box.h \
 		  include/Camera.h \
-		  include/LightSource.h \
-		  include/Plane.h \
-		  include/Player.h \
 		  include/VectorMath.h \
 		  include/Objects/Axes.h \
 		  include/Objects/Box.h \

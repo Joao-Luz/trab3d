@@ -2,17 +2,18 @@
 
 #include <vector>
 
-#include "Box.h"
-#include "LightSource.h"
-#include "Plane.h"
+#include "Objects/Box.h"
+#include "Objects/LightSource.h"
+#include "Objects/Plane.h"
 #include "VectorMath.h"
 
 class Arena {
 private:
     v3f m_dimensions;
-    std::vector<Box> m_plataforms;
-    LightSource m_lights[8];
+    std::vector<objects::Box> m_plataforms;
+    objects::LightSource m_lights[8];
     bool m_active_lights[8];
+    bool m_show_axes;
     
 public:
     Arena(float width, float height);
@@ -33,4 +34,7 @@ public:
     void load_arena_from_file(const char* path);
     void add_plataform(float x, float y, float width, float height);
     void display();
+
+    bool show_axes() { return m_show_axes; }
+    void set_show_axes(bool show_axes) { m_show_axes = show_axes; }
 };

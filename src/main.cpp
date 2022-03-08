@@ -8,17 +8,18 @@
 #include <tinyxml2.h>
 
 #include "Arena.h"
-#include "Box.h"
 #include "Camera.h"
-#include "Plane.h"
-#include "Player.h"
 #include "VectorMath.h"
+
+#include "Objects/Box.h"
+#include "Objects/Plane.h"
+#include "Objects/Player.h"
 
 #define min(a, b) a < b ? a : b
 #define max(a, b) a > b ? a : b
 
 Camera camera;
-Player player;
+objects::Player player;
 Arena arena;
 bool show_axes;
 bool active_light[] = {true, true, true, true, true, true, true, true};
@@ -50,7 +51,7 @@ void load_arena_from_file(const char* path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    player = Player(x-base_x, arena_height - ( y - base_y) - height/2, z, height);
+    player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, z, height);
     arena = Arena(arena_width, arena_height);
 
     // camera
@@ -122,12 +123,8 @@ void display(void) {
         glTranslatef(-player.center().x, -player.center().y-1, -player.center().z);
     }
 
+    arena.set_show_axes(show_axes);
     arena.display();
-
-    Box box(0, 0, 0);
-    box.set_show_axes(show_axes);
-    box.set_color(0, 1, 0);
-    box.display();
 
     player.display();
     player.set_show_axes(show_axes);
