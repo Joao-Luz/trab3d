@@ -11,8 +11,8 @@ class Arena {
 private:
     v3f m_dimensions;
     std::vector<Box> m_plataforms;
-    std::vector<LightSource> m_lights;
-    bool m_active_lights;
+    LightSource m_lights[8];
+    bool m_active_lights[8];
     
 public:
     Arena(float width, float height);
@@ -26,8 +26,9 @@ public:
     float height() { return m_dimensions.y; }
     float length() { return m_dimensions.z; }
 
-    bool active_lights() { return m_active_lights; }
-    void set_active_lights(bool val) { m_active_lights = val; }
+    bool active_lights(int i) { return m_active_lights[i]; }
+    void set_active_lights(bool vals[8]) { for (int i = 0; i < 8; i++) m_active_lights[i] = vals[i]; }
+    void set_active_lights(bool val, int i) { m_active_lights[i] = val; }
 
     void load_arena_from_file(const char* path);
     void add_plataform(float x, float y, float width, float height);

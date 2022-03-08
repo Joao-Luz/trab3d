@@ -21,6 +21,7 @@ Camera camera;
 Player player;
 Arena arena;
 bool show_axes;
+bool active_light[] = {true, true, true, true, true, true, true, true};
 
 void load_arena_from_file(const char* path) {
     tinyxml2::XMLDocument level;
@@ -83,7 +84,6 @@ void init(int windowSize, const char* path) {
     glShadeModel (GL_SMOOTH);
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glViewport (0, 0, (GLsizei)windowSize, (GLsizei)windowSize);
     glMatrixMode (GL_PROJECTION);
@@ -223,6 +223,11 @@ void key_down(unsigned char key, int x, int y) {
     if (key == 'p') {
         show_axes = !show_axes;
     }
+    if (key >= '0' && key <= '9') {
+        int light_id = key-'0'-1;
+        active_light[light_id] = !active_light[light_id]; 
+    }
+    arena.set_active_lights(active_light);
 
     glutPostRedisplay();
 }

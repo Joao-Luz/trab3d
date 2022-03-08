@@ -7,14 +7,16 @@
 Arena::Arena(float width, float height) {
     m_dimensions = {width, height, height/2};
 
-    for (int i = 0; i < (int)m_dimensions.x; i+=8) {
+    for (int i = 0; i < 8; i++) {
+        float x = i*m_dimensions.x/8;
         LightSource light(
-            {(float)i, m_dimensions.y/2, -m_dimensions.z/2, 1.0},
-            {0.1, 0.1, 0.1, 0.1},
-            {0.8, 0.8, 0.8, 0.3},
-            {0.8, 0.8, 0.8, 0.3}
+            {x, m_dimensions.y/2, 0, 1.0},
+            {0.0, 0.0, 0.0, 0.1}, // ambient
+            {0.8, 0.8, 0.8, 0.3}, // difuse
+            {0.8, 0.8, 0.8, 0.3}, // specular
+            i
         );
-        m_lights.push_back(light);
+        m_lights[i] = light;
     }
 }
 
@@ -26,8 +28,9 @@ void Arena::add_plataform(float x, float y, float width, float height) {
 
 void Arena::display() {
 
-    for (auto light : m_lights) {
-        light.display();
+    for (int i = 0; i < 8; i++) {
+        m_lights[i].set_active(m_active_lights[i]);
+        m_lights[i].display();
     }
 
     Plane floor(
@@ -45,7 +48,7 @@ void Arena::display() {
         {m_dimensions.x, m_dimensions.y, m_dimensions.z},
         {0, m_dimensions.y, m_dimensions.z}
     );
-    floor.set_color(1, 0.5, 0.4);
+    ceiling.set_color(1, 0.5, 0.4);
     ceiling.display();
 
     for (auto plataform : m_plataforms) {
