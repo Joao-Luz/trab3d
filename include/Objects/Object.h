@@ -69,6 +69,8 @@ public:
     bool should_set_material() { return m_should_set_material; }
     void set_should_set_material(bool should_set_material) { m_should_set_material = should_set_material; }
 
+    void display_axes();
+
     virtual void display() {}
 
     Object() {}

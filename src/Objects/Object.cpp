@@ -4,6 +4,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Objects/Axes.h"
+
 namespace objects {
 
 Object::Object(v3f position, v3f normal, v3f direction) :
@@ -19,6 +21,7 @@ m_direction{direction} {
     m_shininess = 64;
     m_should_display = true;
     m_should_set_material = true;
+    m_show_axes = false;
 }
 
 Object::Object(v3f position) : Object(position, {0, 0, 0}, {0, 0, 0}) {}
@@ -38,6 +41,13 @@ void Object::set_material() {
     glMaterialfv(GL_FRONT, GL_DIFFUSE, color);
     glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+}
+
+void Object::display_axes() {
+    if (!m_show_axes) return;
+
+    Axes axes(m_position, m_scale);
+    axes.display();
 }
 
 }

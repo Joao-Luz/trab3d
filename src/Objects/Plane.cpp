@@ -29,6 +29,8 @@ v3f Plane::center() {
 void Plane::display() {
     if (!m_should_display) return;
 
+    this->display_axes();
+
     this->set_material();
 
     glNormal3f(m_normal.x, m_normal.y, m_normal.z);
@@ -55,11 +57,6 @@ void Plane::display() {
                 glEnd();
             glPopMatrix();
         }
-    }
-
-    if (m_show_axes) {
-        // Axes axes(m_position, v3f{1, 1, 1});
-        // axes.display();
     }
 }
 

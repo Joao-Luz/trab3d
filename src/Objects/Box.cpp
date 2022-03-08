@@ -24,6 +24,11 @@ v3f Box::center() {
 void Box::display() {
     if (!m_should_display) return;
 
+    if (m_show_axes) {
+        this->display_axes();
+
+    }
+
     this->set_material();
 
     // bottom

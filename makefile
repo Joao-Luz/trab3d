@@ -15,9 +15,12 @@ SRC = src/main.cpp \
 	  src/LightSource.cpp \
 	  src/Plane.cpp \
 	  src/Player.cpp \
+	  src/Objects/Axes.cpp \
 	  src/Objects/Box.cpp \
+	  src/Objects/LightSource.cpp \
 	  src/Objects/Object.cpp \
 	  src/Objects/Plane.cpp \
+	  src/Objects/Player.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
@@ -28,9 +31,12 @@ HEADERS = include/Arena.h \
 		  include/Plane.h \
 		  include/Player.h \
 		  include/VectorMath.h \
+		  include/Objects/Axes.h \
 		  include/Objects/Box.h \
+		  include/Objects/LightSource.h \
 	  	  include/Objects/Object.h \
 	  	  include/Objects/Plane.h \
+		  include/Objects/Player.h \
 		  lib/tinyxml2.h
 
 OBJECTS := $(SRC:%.cpp=build/%.o)
@@ -54,6 +60,9 @@ clean:
 	-rm -f -r build
 	-rm -f *.o
 	-rm -f $(TARGET)
+
+debug:
+	@valgrind ./$(TARGET) $(IN_FILE)
 
 run: $(TARGET)
 	@./$(TARGET) $(IN_FILE)
