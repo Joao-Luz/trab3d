@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../VectorMath.h"
+#include <string>
 
 namespace objects {
 
@@ -19,6 +20,8 @@ protected:
     bool m_should_display;
     bool m_show_axes;
     bool m_should_set_material;
+
+    int m_texture;
 
     void set_material();
 
@@ -82,8 +85,8 @@ public:
     float angle_xy() { return m_angle.z; }
     void set_angle_xy(float angle) { m_angle.z = angle; }
 
-    float angle_xz() { return m_angle.xz; }
-    void set_angle_xz(float angle) { m_angle.xz = angle; }
+    void set_texture(std::string name);
+    void set_texture(int texture) { m_texture = texture; }
 
     void display_axes();
 

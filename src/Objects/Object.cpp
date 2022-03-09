@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 
 #include "Objects/Axes.h"
+#include "Textures.h"
 
 namespace objects {
 
@@ -24,6 +25,7 @@ m_direction{direction} {
     m_show_axes = false;
 
     m_angle = {0, 0, 0};
+    m_texture = -1;
 }
 
 Object::Object(v3f position) : Object(position, {0, 0, 0}, {0, 0, 0}) {}
@@ -50,6 +52,10 @@ void Object::display_axes() {
 
     Axes axes(m_position, m_scale);
     axes.display();
+}
+
+void Object::set_texture(std::string name) {
+    m_texture = textures[name]; 
 }
 
 }
