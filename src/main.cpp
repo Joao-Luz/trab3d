@@ -9,6 +9,7 @@
 
 #include "Arena.h"
 #include "VectorMath.h"
+#include "Textures.h"
 
 #include "Objects/Camera.h"
 #include "Objects/Box.h"
@@ -28,6 +29,8 @@ int last_x, last_y = 0;
 float last_phi, last_theta = 0;
 float phi, theta = 0;
 float yz, xz = 0;
+
+Textures textures;
 
 void load_arena_from_file(const char* path) {
     tinyxml2::XMLDocument level;
@@ -94,11 +97,15 @@ void init(int window_width, int window_height, const char* path) {
     glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
     glViewport (0, 0, (GLsizei)window_width, (GLsizei)window_height);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
     gluPerspective (90, (GLfloat)window_width/window_height, 1, 500);
 
+    textures.load_texture("assets/wall.bmp", "wall");
+    textures.load_texture("assets/floor.bmp", "floor");
+    textures.load_texture("assets/block.bmp", "block");
     load_arena_from_file(path);
 }
 

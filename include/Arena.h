@@ -6,6 +6,7 @@
 #include "Objects/LightSource.h"
 #include "Objects/Plane.h"
 #include "VectorMath.h"
+#include "Textures.h"
 
 class Arena {
 private:
@@ -14,7 +15,7 @@ private:
     objects::LightSource m_lights[8];
     bool m_active_lights[8];
     bool m_show_axes;
-    
+
 public:
     Arena(float width, float height);
     Arena() {}
