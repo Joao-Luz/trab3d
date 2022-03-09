@@ -12,10 +12,10 @@ Arena::Arena(float width, float height) {
     for (int i = 0; i < 8; i++) {
         float x = i*m_dimensions.x/8;
         objects::LightSource light(
-            {x, m_dimensions.y/2, 0, 1.0},
-            {0.0, 0.0, 0.0, 0.1}, // ambient
-            {0.8, 0.8, 0.8, 0.3}, // difuse
-            {0.8, 0.8, 0.8, 0.3}, // specular
+            {x, m_dimensions.y/2, 0.5, 1.0},
+            {0.05, 0.05, 0.05, 0.03}, // ambient
+            {0.05, 0.05, 0.05, 0.03}, // difuse
+            {0.05, 0.05, 0.05, 0.03}, // specular
             i
         );
         m_lights[i] = light;
@@ -36,26 +36,86 @@ void Arena::display() {
         m_lights[i].display();
     }
 
+    v4f specular = {0.2, 0.2, 0.2, 0.2};
+    float shininess = 0;
+    int subdivisions = 50;
+
     objects::Plane floor(
         {0, 0, m_dimensions.z},
         {m_dimensions.x, 0, m_dimensions.z},
         {m_dimensions.x, 0, 0},
         {0, 0, 0},
-        20
+        subdivisions
     );
     floor.set_color(1, 0.5, 0.4, 1);
     floor.set_show_axes(m_show_axes);
+    floor.set_specular(specular);
+    floor.set_shininess(shininess);
     floor.display();
+
+    objects::Plane left_wall(
+        {0, 0, 0},
+        {m_dimensions.x, 0, 0},
+        {m_dimensions.x, m_dimensions.y, 0},
+        {0, m_dimensions.y, 0},
+        subdivisions
+    );
+    left_wall.set_color(1, 0.5, 0.4, 1);
+    left_wall.set_show_axes(m_show_axes);
+    left_wall.set_specular(specular);
+    left_wall.set_shininess(shininess);
+    left_wall.display();
+
+    objects::Plane right_wall(
+        {0, 0, m_dimensions.z},
+        {0, m_dimensions.y, m_dimensions.z},
+        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
+        {m_dimensions.x, 0, m_dimensions.z},
+        subdivisions
+    );
+    right_wall.set_color(1, 0.5, 0.4, 1);
+    right_wall.set_show_axes(m_show_axes);
+    right_wall.set_specular(specular);
+    right_wall.set_shininess(shininess);
+    right_wall.display();
+
+    objects::Plane back_wall(
+        {0, 0, 0},
+        {0, m_dimensions.y, 0},
+        {0, m_dimensions.y, m_dimensions.z},
+        {0, 0, m_dimensions.z},
+        subdivisions
+    );
+    back_wall.set_color(1, 0, 0, 1);
+    back_wall.set_show_axes(m_show_axes);
+    back_wall.set_specular(specular);
+    back_wall.set_shininess(shininess);
+    back_wall.display();
+
+    objects::Plane front_wall(
+        {m_dimensions.x, 0, 0},
+        {m_dimensions.x, 0, m_dimensions.z},
+        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
+        {m_dimensions.x, m_dimensions.y, 0},
+        subdivisions
+    );
+    front_wall.set_color(1, 0, 0, 1);
+    front_wall.set_show_axes(m_show_axes);
+    front_wall.set_specular(specular);
+    front_wall.set_shininess(shininess);
+    front_wall.display();
 
     objects::Plane ceiling(
         {0, m_dimensions.y, 0},
         {m_dimensions.x, m_dimensions.y, 0},
         {m_dimensions.x, m_dimensions.y, m_dimensions.z},
         {0, m_dimensions.y, m_dimensions.z},
-        20
+        subdivisions
     );
     ceiling.set_color(1, 0.5, 0.4, 1);
     ceiling.set_show_axes(m_show_axes);
+    ceiling.set_specular(specular);
+    ceiling.set_shininess(shininess);
     ceiling.display();
 
     for (auto plataform : m_plataforms) {

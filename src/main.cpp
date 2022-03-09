@@ -8,9 +8,9 @@
 #include <tinyxml2.h>
 
 #include "Arena.h"
-#include "Camera.h"
 #include "VectorMath.h"
 
+#include "Objects/Camera.h"
 #include "Objects/Box.h"
 #include "Objects/Plane.h"
 #include "Objects/Player.h"
@@ -18,12 +18,16 @@
 #define min(a, b) a < b ? a : b
 #define max(a, b) a > b ? a : b
 
-Camera camera;
+objects::Camera camera;
 objects::Player player;
 Arena arena;
 bool show_axes;
-bool active_light[] = {true, true, true, true, true, true, true, true};
+bool active_light[8];
 int window_width, window_height;
+int last_x, last_y = 0;
+float last_phi, last_theta = 0;
+float phi, theta = 0;
+float yz, xz = 0;
 
 void load_arena_from_file(const char* path) {
     tinyxml2::XMLDocument level;
@@ -51,13 +55,16 @@ void load_arena_from_file(const char* path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, z, height);
+    player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height);
     arena = Arena(arena_width, arena_height);
 
+    for (int i = 0; i < 8; i++) {
+        active_light[i] = true;
+    }
+
     // camera
-    camera = Camera(0, 2, 5);
-    camera.set_direction(camera.position());
-    camera.set_up(0, 1, 0);
+    camera = objects::Camera(player.center().x, player.center().y + 1, player.center().z + 3*height);
+    camera.set_direction({1, 0, 0});
 
     // plataforms
     for (auto rect = level.FirstChild()->FirstChildElement("rect"); rect != nullptr; rect = rect->NextSiblingElement("rect")) {
@@ -90,7 +97,7 @@ void init(int window_width, int window_height, const char* path) {
     glViewport (0, 0, (GLsizei)window_width, (GLsizei)window_height);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective (50, (GLfloat)window_width/window_height, 1, 500);
+    gluPerspective (90, (GLfloat)window_width/window_height, 1, 500);
 
     load_arena_from_file(path);
 }
@@ -102,7 +109,7 @@ void display(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    if (camera.mode() == Camera::orbital) {
+    if (camera.mode() == objects::Camera::orbital) {
         gluLookAt(
             camera.position().x,
             camera.position().y,
@@ -112,30 +119,27 @@ void display(void) {
             player.center().y, 
             player.center().z, 
 
-            camera.up().x,
-            camera.up().y,
-            camera.up().z
+            camera.normal().x,
+            camera.normal().y,
+            camera.normal().z
         );
     }
-    else if (camera.mode() == Camera::first_person) {
+    else if (camera.mode() == objects::Camera::first_person) {
         glRotatef(camera.angle_yz(),1,0,0);
         glRotatef(camera.angle_xz(),0,1,0);
         glTranslatef(-player.center().x, -player.center().y-1, -player.center().z);
     }
 
+    arena.set_active_lights(active_light);
     arena.set_show_axes(show_axes);
     arena.display();
 
+    player.set_angle_xz(xz);
     player.display();
     player.set_show_axes(show_axes);
 
     glutSwapBuffers();
 }
-
-int last_x, last_y = 0;
-float last_phi, last_theta = 0;
-float phi, theta = 0;
-float yz, xz = 0;
 
 void mouse_click(int button, int state, int x, int y) {
 
@@ -169,9 +173,9 @@ void mouse_move(int x, int y) {
     yz = 180*(theta)/M_PI;
     xz = -180*(phi)/M_PI;
 
-    float rho = 2*player.height();
+    float rho = 3*player.height();
 
-    if (camera.mode() == Camera::orbital) {
+    if (camera.mode() == objects::Camera::orbital) {
 
         camera.set_position(
             rho*sin(phi)*cos(theta) + player.center().x,
@@ -182,7 +186,7 @@ void mouse_move(int x, int y) {
         camera.set_direction(player.center() - camera.position());
     }
 
-    else if (camera.mode() == Camera::first_person) {
+    else if (camera.mode() == objects::Camera::first_person) {
         camera.set_angle(yz, xz);
 
         camera.set_direction(player.center() - camera.position());
@@ -202,10 +206,10 @@ void key_down(unsigned char key, int x, int y) {
     key_state[key] = 1;
 
     if (key == 'x') {
-        Camera::camera_mode new_mode = (Camera::camera_mode)((camera.mode() + 1)%2);
+        objects::Camera::camera_mode new_mode = (objects::Camera::camera_mode)((camera.mode() + 1)%2);
         camera.set_mode(new_mode);
 
-        if (new_mode == Camera::first_person) {
+        if (new_mode == objects::Camera::first_person) {
             camera.set_angle(yz, xz);
             v3f new_direction = {camera.direction().x, 0, -camera.direction().z};
             camera.set_direction(new_direction);
