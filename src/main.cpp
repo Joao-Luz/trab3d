@@ -221,11 +221,13 @@ void key_down(unsigned char key, int x, int y) {
             v3f new_direction = {camera.direction().x, 0, -camera.direction().z};
             camera.set_direction(new_direction);
         } else {
+            float rho = 3*player.height();
             camera.set_position(
-                5*sin(phi)*cos(theta) + player.position().x,
-                5*sin(theta) + player.position().y,
-                5*cos(theta)*cos(phi) + player.position().z
+                rho*sin(phi)*cos(theta) + player.center().x,
+                rho*sin(theta) + player.center().y,
+                rho*cos(theta)*cos(phi) + player.center().z
             );
+            camera.set_direction(player.center() - camera.position());
         }
     }
 
