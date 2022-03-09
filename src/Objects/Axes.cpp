@@ -16,32 +16,38 @@ Axes::Axes(v3f position, v3f scale) : Object(position) {
 void Axes::display() {
 
     glPushMatrix();
-    glRotatef(m_angle.yz,1,0,0);
-    glRotatef(m_angle.xz,0,1,0);
 
     glPushAttrib(GL_ENABLE_BIT);
         glDisable(GL_LIGHTING);
         glDisable(GL_TEXTURE_2D);
+ 
+        //x axis
+        glPushMatrix();
+            glColor3f(1, 0, 0);
+            glScalef(5, 0.3, 0.3);
+            glTranslatef(0.5, 0, 0); // put in one end
+            glutSolidCube(1.0);
+        glPopMatrix();
 
-        glColor3f(0, 0, 1);
-        Box x_axis((v3f){ m_position.x-0.05f, m_position.y-0.05f, m_position.z-0.05f }, { m_scale.x, 0.1, 0.1 });
-        x_axis.set_should_set_material(false);
-        x_axis.set_show_axes(false);
-        x_axis.display();
+        //y axis
+        glPushMatrix();
+            glColor3f(0, 1, 0);
+            glRotatef(90,0,0,1);
+            glScalef(5, 0.3, 0.3);
+            glTranslatef(0.5, 0, 0); // put in one end
+            glutSolidCube(1.0);
+        glPopMatrix();
 
-        glColor3f(0, 1, 0);
-        Box y_axis((v3f){ m_position.x-0.05f, m_position.y-0.05f, m_position.z-0.05f }, { 0.1, m_scale.y, 0.1 });
-        y_axis.set_should_set_material(false);
-        y_axis.set_show_axes(false);
-        y_axis.display();
-
-        glColor3f(1, 0, 0);
-        Box z_axis((v3f){ m_position.x-0.05f, m_position.y-0.05f, m_position.z-0.05f }, { 0.1, 0.1, m_scale.z });
-        z_axis.set_should_set_material(false);
-        z_axis.set_show_axes(false);
-        z_axis.display();
-
+        //z axis
+        glPushMatrix();
+            glColor3f(0, 0, 1);
+            glRotatef(-90,0,1,0);
+            glScalef(5, 0.3, 0.3);
+            glTranslatef(0.5, 0, 0); // put in one end
+            glutSolidCube(1.0);
+        glPopMatrix();
     glPopAttrib();
+
     glPopMatrix();
 }
 
