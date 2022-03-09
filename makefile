@@ -9,6 +9,7 @@ all: $(TARGET)
 
 SRC = src/main.cpp \
 	  src/Arena.cpp \
+	  src/Textures.cpp \
 	  src/Objects/Camera.cpp \
 	  src/Objects/Axes.cpp \
 	  src/Objects/Box.cpp \
@@ -19,8 +20,9 @@ SRC = src/main.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
-		  include/Objects/Camera.h \
+		  include/Textures.h \
 		  include/VectorMath.h \
+		  include/Objects/Camera.h \
 		  include/Objects/Axes.h \
 		  include/Objects/Box.h \
 		  include/Objects/LightSource.h \
@@ -51,7 +53,7 @@ clean:
 	-rm -f *.o
 	-rm -f $(TARGET)
 
-debug:
+debug: $(TARGET)
 	@valgrind ./$(TARGET) $(IN_FILE)
 
 run: $(TARGET)
