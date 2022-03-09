@@ -187,7 +187,7 @@ void mouse_move(int x, int y) {
     }
 
     else if (camera.mode() == objects::Camera::first_person) {
-        camera.set_angle(yz, xz);
+        camera.set_angle(yz, xz, 0);
 
         camera.set_direction(player.center() - camera.position());
         camera.set_direction(
@@ -210,7 +210,7 @@ void key_down(unsigned char key, int x, int y) {
         camera.set_mode(new_mode);
 
         if (new_mode == objects::Camera::first_person) {
-            camera.set_angle(yz, xz);
+            camera.set_angle(yz, xz, 0);
             v3f new_direction = {camera.direction().x, 0, -camera.direction().z};
             camera.set_direction(new_direction);
         } else {

@@ -38,8 +38,9 @@ void Box::display() {
 
     glTranslatef(m_position.x, m_position.y, m_position.z);
 
-    glRotatef(m_angle.yz,1,0,0);
-    glRotatef(m_angle.xz,0,1,0);
+        glRotatef(m_angle.x,1,0,0);
+        glRotatef(m_angle.y,0,1,0);
+        glRotatef(m_angle.z,0,0,1);
 
     // bottom
     Plane bottom(

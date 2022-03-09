@@ -21,8 +21,8 @@ void Player::display() {
 
     glTranslatef(center.x, m_position.y, center.z);
 
-    glRotatef(m_angle.yz,1,0,0);
-    glRotatef(90-m_angle.xz,0,1,0);
+    glRotatef(m_angle.x,1,0,0);
+    glRotatef(90-m_angle.y,0,1,0);
 
     Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
     body.set_show_axes(m_show_axes);

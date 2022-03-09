@@ -22,9 +22,7 @@ protected:
 
     void set_material();
 
-    struct {
-        float yz, xz;
-    } m_angle;
+    v3f m_angle;
 public:
     Object(float x, float y, float z);
     Object(v3f position);
@@ -73,10 +71,16 @@ public:
     bool should_set_material() { return m_should_set_material; }
     void set_should_set_material(bool should_set_material) { m_should_set_material = should_set_material; }
 
-    void set_angle(float yz, float xz) { m_angle = {yz, xz}; }
+    void set_angle(float yz, float xz, float xy) { m_angle = {yz, xz, xy}; }
 
-    float angle_yz() { return m_angle.yz; }
-    void set_angle_yz(float angle) { m_angle.yz = angle; }
+    float angle_yz() { return m_angle.x; }
+    void set_angle_yz(float angle) { m_angle.x = angle; }
+
+    float angle_xz() { return m_angle.y; }
+    void set_angle_xz(float angle) { m_angle.y = angle; }
+
+    float angle_xy() { return m_angle.z; }
+    void set_angle_xy(float angle) { m_angle.z = angle; }
 
     float angle_xz() { return m_angle.xz; }
     void set_angle_xz(float angle) { m_angle.xz = angle; }
