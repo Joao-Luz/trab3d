@@ -22,6 +22,8 @@ m_direction{direction} {
     m_should_display = true;
     m_should_set_material = true;
     m_show_axes = false;
+
+    m_angle = {0, 0};
 }
 
 Object::Object(v3f position) : Object(position, {0, 0, 0}, {0, 0, 0}) {}

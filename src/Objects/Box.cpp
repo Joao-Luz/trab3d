@@ -3,6 +3,9 @@
 #include "Objects/Plane.h"
 
 #include <iostream>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 
 namespace objects {
 
@@ -31,12 +34,19 @@ void Box::display() {
 
     this->set_material();
 
+    glPushMatrix();
+
+    glTranslatef(m_position.x, m_position.y, m_position.z);
+
+    glRotatef(m_angle.yz,1,0,0);
+    glRotatef(m_angle.xz,0,1,0);
+
     // bottom
     Plane bottom(
-        {m_position},
-        {m_position + (v3f){m_scale.x, 0, 0}},
-        {m_position + (v3f){m_scale.x, 0, m_scale.z}},
-        {m_position + (v3f){0, 0, m_scale.z}},
+        {(v3f){0, 0, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){0, 0, m_scale.z}},
         m_faces_subdivisions
     );
     bottom.set_should_set_material(false);
@@ -45,10 +55,10 @@ void Box::display() {
 
     // top
     Plane top(
-        {m_position + (v3f){0, m_scale.y, 0}},
-        {m_position + (v3f){0, m_scale.y, m_scale.z}},
-        {m_position + (v3f){m_scale.x, m_scale.y, m_scale.z}},
-        {m_position + (v3f){m_scale.x, m_scale.y, 0}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, 0}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, 0}},
         m_faces_subdivisions
     );
     top.set_should_set_material(false);
@@ -56,10 +66,10 @@ void Box::display() {
 
     // back
     Plane back(
-        {m_position},
-        {m_position + (v3f){0, 0, m_scale.z}},
-        {m_position + (v3f){0, m_scale.y, m_scale.z}},
-        {m_position + (v3f){0, m_scale.y, 0}},
+        {(v3f){0, 0, 0}},
+        {(v3f){0, 0, 0} + (v3f){0, 0, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, 0}},
         m_faces_subdivisions
     );
     back.set_should_set_material(false);
@@ -67,10 +77,10 @@ void Box::display() {
 
     // front
     Plane front(
-        {m_position + (v3f){m_scale.x, 0, 0}},
-        {m_position + (v3f){m_scale.x, m_scale.y, 0}},
-        {m_position + (v3f){m_scale.x, m_scale.y, m_scale.z}},
-        {m_position + (v3f){m_scale.x, 0, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, m_scale.z}},
         m_faces_subdivisions
     );
     front.set_should_set_material(false);
@@ -78,10 +88,10 @@ void Box::display() {
 
     // left
     Plane left(
-        {m_position},
-        {m_position + (v3f){0, m_scale.y, 0}},
-        {m_position + (v3f){m_scale.x, m_scale.y, 0}},
-        {m_position + (v3f){m_scale.x, 0, 0}},
+        {(v3f){0, 0, 0}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, 0}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, 0}},
         m_faces_subdivisions
     );
     left.set_should_set_material(false);
@@ -89,14 +99,16 @@ void Box::display() {
 
     // right
     Plane right(
-        {m_position + (v3f){0, 0, m_scale.z}},
-        {m_position + (v3f){m_scale.x, 0, m_scale.z}},
-        {m_position + (v3f){m_scale.x, m_scale.y, m_scale.z}},
-        {m_position + (v3f){0, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){0, 0, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, 0, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){m_scale.x, m_scale.y, m_scale.z}},
+        {(v3f){0, 0, 0} + (v3f){0, m_scale.y, m_scale.z}},
         m_faces_subdivisions
     );
     right.set_should_set_material(false);
     right.display();
+
+    glPopMatrix();
 }
 
 }

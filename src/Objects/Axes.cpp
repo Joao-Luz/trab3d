@@ -15,6 +15,10 @@ Axes::Axes(v3f position, v3f scale) : Object(position) {
 
 void Axes::display() {
 
+    glPushMatrix();
+    glRotatef(m_angle.yz,1,0,0);
+    glRotatef(m_angle.xz,0,1,0);
+
     glPushAttrib(GL_ENABLE_BIT);
         glDisable(GL_LIGHTING);
         glDisable(GL_TEXTURE_2D);
@@ -38,6 +42,7 @@ void Axes::display() {
         z_axis.display();
 
     glPopAttrib();
+    glPopMatrix();
 }
 
 }

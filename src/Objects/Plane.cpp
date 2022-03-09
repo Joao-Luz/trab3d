@@ -33,6 +33,8 @@ void Plane::display() {
 
     this->set_material();
 
+    glPushMatrix();
+    glTranslatef(m_position.x, m_position.y, m_position.z);
     glNormal3f(m_normal.x, m_normal.y, m_normal.z);
 
     v3f a = m_points[0];
@@ -43,10 +45,10 @@ void Plane::display() {
     for (int i = 0; i < m_subdivisions; i++) {
         for (int j = 0; j < m_subdivisions; j++) {
 
-            v3f curr_a = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions));
-            v3f curr_b = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions));
-            v3f curr_c = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions));
-            v3f curr_d = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions));
+            v3f curr_a = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions)) - m_position;
+            v3f curr_b = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions)) - m_position;
+            v3f curr_c = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions)) - m_position;
+            v3f curr_d = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions)) - m_position;
 
             glPushMatrix();
                 glBegin(GL_QUADS);
@@ -58,6 +60,8 @@ void Plane::display() {
             glPopMatrix();
         }
     }
+
+    glPopMatrix();
 }
 
 }
