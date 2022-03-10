@@ -9,6 +9,7 @@ all: $(TARGET)
 
 SRC = src/main.cpp \
 	  src/Arena.cpp \
+	  src/Game.cpp \
 	  src/Textures.cpp \
 	  src/Objects/Camera.cpp \
 	  src/Objects/Axes.cpp \
@@ -20,6 +21,7 @@ SRC = src/main.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
+		  include/Game.h \
 		  include/Textures.h \
 		  include/VectorMath.h \
 		  include/Objects/Camera.h \

@@ -8,9 +8,7 @@ namespace objects {
 class Camera : public Object {
 
 private:
-    struct {
-        float yz, xz;
-    } m_angle;
+    float m_fov, m_aspect, m_near, m_far;
 public:
     enum camera_mode{
         orbital = 0,
@@ -20,11 +18,14 @@ public:
     camera_mode m_mode;
 
     Camera(float x, float y, float z);
+    Camera(v3f position, float fov = 90, float aspect = 1, float near = 1, float far = 500);
     Camera() {}
     ~Camera() {}
 
     camera_mode mode() { return m_mode; }
     void set_mode(camera_mode mode) { m_mode = mode; }
+
+    void init();
 };
 
 }

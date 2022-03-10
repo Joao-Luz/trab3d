@@ -11,6 +11,7 @@ protected:
     v3f m_normal;
     v3f m_direction;
     v3f m_scale;
+    v3f m_velocity;
     
     v4f m_color;
     v4f m_emission;
@@ -49,6 +50,12 @@ public:
     v3f scale() { return m_scale; }
     void set_scale(v3f scale) { m_scale = scale; }
     void set_scale(float x, float y, float z) { m_scale = {x, y, z}; }
+
+    v3f velocity() { return m_velocity; }
+    void set_velocity(v3f velocity) { m_velocity = velocity; }
+    void set_velocity(float x, float y, float z) { m_velocity = {x, y, z}; }
+    void increase_velocity(v3f dv) { m_velocity = m_velocity + dv; }
+    void increase_velocity(float x, float y, float z) { m_velocity = m_velocity + (v3f){x, y, z}; }
 
     v4f color() { return m_color; }
     void set_color(v4f color) { m_color = color; }

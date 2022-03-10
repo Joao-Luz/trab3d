@@ -11,7 +11,5 @@ public:
     Textures() : std::unordered_map<std::string, int>() { }
     ~Textures() {}
 
-    int load_texture(std::string name, std::string path);
+    static int load_texture(std::string path, std::string name);
 };
-
-extern Textures textures;

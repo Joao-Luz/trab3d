@@ -4,9 +4,10 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Game.h"
 #include "Objects/Plane.h"
 
-Arena::Arena(float width, float height) {
+Arena::Arena(float width, float height, Game* game) : m_game(game) {
     m_dimensions = {width, height, height/2};
 
     for (int i = 0; i < 8; i++) {
@@ -26,7 +27,7 @@ void Arena::add_plataform(float x, float y, float width, float height) {
     objects::Box plataform({x, y, 0}, {width, height, m_dimensions.z}, 16);
     plataform.set_color(1, 1, 1, 1);
     plataform.set_specular({0.8, 0.8, 0.8, 1});
-    plataform.set_texture("block");
+    plataform.set_texture(m_game->get_texture("block"));
     m_plataforms.push_back(plataform);
 }
 
@@ -53,7 +54,7 @@ void Arena::display() {
     floor.set_show_axes(m_show_axes);
     floor.set_specular(specular);
     floor.set_shininess(shininess);
-    floor.set_texture("floor");
+    floor.set_texture(m_game->get_texture("floor"));
     floor.display();
 
     objects::Plane left_wall(
@@ -67,7 +68,7 @@ void Arena::display() {
     left_wall.set_show_axes(m_show_axes);
     left_wall.set_specular(specular);
     left_wall.set_shininess(shininess);
-    left_wall.set_texture("wall");
+    left_wall.set_texture(m_game->get_texture("wall"));
     left_wall.display();
 
     objects::Plane right_wall(
@@ -81,7 +82,7 @@ void Arena::display() {
     right_wall.set_show_axes(m_show_axes);
     right_wall.set_specular(specular);
     right_wall.set_shininess(shininess);
-    right_wall.set_texture("wall");
+    right_wall.set_texture(m_game->get_texture("wall"));
     right_wall.display();
 
     objects::Plane back_wall(
@@ -121,7 +122,7 @@ void Arena::display() {
     ceiling.set_show_axes(m_show_axes);
     ceiling.set_specular(specular);
     ceiling.set_shininess(shininess);
-    ceiling.set_texture("floor");
+    ceiling.set_texture(m_game->get_texture("floor"));
     ceiling.display();
 
     for (auto plataform : m_plataforms) {

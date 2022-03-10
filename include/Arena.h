@@ -8,6 +8,8 @@
 #include "VectorMath.h"
 #include "Textures.h"
 
+class Game;
+
 class Arena {
 private:
     v3f m_dimensions;
@@ -16,8 +18,10 @@ private:
     bool m_active_lights[8];
     bool m_show_axes;
 
+    Game* m_game;
+
 public:
-    Arena(float width, float height);
+    Arena(float width, float height, Game* game);
     Arena() {}
     ~Arena() {}
 
