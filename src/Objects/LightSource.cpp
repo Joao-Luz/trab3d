@@ -37,7 +37,7 @@ void LightSource::display() {
     };
 
     glEnable(GL_LIGHT0+m_light_id);
-    glLightf(GL_LIGHT0+m_light_id, GL_LINEAR_ATTENUATION, 0.1);
+    glLightf(GL_LIGHT0+m_light_id, GL_LINEAR_ATTENUATION, 0.15);
     glLightfv(GL_LIGHT0+m_light_id, GL_AMBIENT,  &light_params[0][0]);
     glLightfv(GL_LIGHT0+m_light_id, GL_DIFFUSE,  &light_params[1][0]);
     glLightfv(GL_LIGHT0+m_light_id, GL_SPECULAR, &light_params[2][0]);
