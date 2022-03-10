@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 #include "Objects/Camera.h"
@@ -18,6 +19,7 @@ private:
     Arena m_arena;
     objects::Camera m_camera;
     objects::Character m_player;
+    std::vector<objects::Character> m_enemies;
 
     int m_last_x, m_last_y;
     float m_last_phi, m_last_theta;
@@ -27,6 +29,7 @@ private:
     bool m_key_state[256];
     bool m_show_axes;
     bool m_active_lights[8];
+    float m_clock;
 
     float m_dt;
     float m_gravity;
@@ -36,6 +39,11 @@ private:
     void load_texture(std::string path, std::string name);
     void handle_key_state();
     void handle_player_movement();
+    void handle_enemy_movement(objects::Character* enemy);
+    void add_enemy(float x, float y, float z, float height, float radius);
+    void enemy_plataform_collision(objects::Character* character);
+    void player_plataform_collision();
+    void player_enemy_collision(objects::Character* enemy);
 public:
     Game();
     ~Game() {}
