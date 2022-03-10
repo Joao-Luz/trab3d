@@ -10,30 +10,39 @@
 Arena::Arena(float width, float height, Game* game) : m_game(game) {
     m_dimensions = {width, height, height/2};
 
-    for (int i = 0; i < 8; i++) {
-        float x = i*m_dimensions.x/8;
-        objects::LightSource light(
+    for (int i = 0; i < 3; i++) {
+        float x = i*m_dimensions.x/3 + m_dimensions.x/6;
+        objects::LightSource light_left(
             {x, m_dimensions.y/2, 0.5, 1.0},
-            {0.05, 0.05, 0.05, 0.03}, // ambient
-            {0.05, 0.05, 0.05, 0.03}, // difuse
-            {0.05, 0.05, 0.05, 0.03}, // specular
-            i
+            {0.7, 0.7, 0.7, 1}, // ambient
+            {0.2f, 0.2f, 0.2f, 0.2f}, // diffuse
+            {1.0f, 1.0f, 1.0f, 1.0f}, // specular
+            2*i
         );
-        m_lights[i] = light;
+        m_lights[2*i] = light_left;
+        
+        objects::LightSource light_right(
+            {x, m_dimensions.y/2, m_dimensions.z-0.5f, 1.0},
+            {0.7, 0.7, 0.7, 1}, // ambient
+            {0.2f, 0.2f, 0.2f, 0.2f}, // diffuse
+            {1.0f, 1.0f, 1.0f, 1.0f}, // specular
+            2*i+1
+        );
+        m_lights[2*i+1] = light_right;
     }
 }
 
 void Arena::add_plataform(float x, float y, float width, float height) {
-    objects::Box plataform({x, y, 0}, {width, height, m_dimensions.z}, 16);
-    plataform.set_color(1, 1, 1, 1);
-    plataform.set_specular({0.8, 0.8, 0.8, 1});
+    objects::Box plataform({x, y, 0}, {width, height, m_dimensions.z}, 8);
+    plataform.set_color(1.0f, 1.0f, 1.0f, 1.0f);
+    plataform.set_specular({1.0f, 1.0f, 1.0f, 1.0f});
     plataform.set_texture(m_game->get_texture("block"));
     m_plataforms.push_back(plataform);
 }
 
 void Arena::display() {
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 6; i++) {
         m_lights[i].set_active(m_active_lights[i]);
         m_lights[i].set_show_axes(m_show_axes);
         m_lights[i].display();
@@ -41,7 +50,7 @@ void Arena::display() {
 
     v4f specular = {0.2, 0.2, 0.2, 0.2};
     float shininess = 0;
-    int subdivisions = 1;
+    int subdivisions = 16;
 
     objects::Plane floor(
         {0, 0, m_dimensions.z},

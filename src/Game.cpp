@@ -169,6 +169,9 @@ void Game::init(int window_width, int window_height, std::string window_name, in
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glViewport(0, 0, (GLsizei)m_window_width, (GLsizei)m_window_height);
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+    float global_amb[] = { 0.1f, 0.1f, 0.1f, 1.f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_amb);
 
 
     // load data
@@ -384,7 +387,7 @@ void Game::update(float dt) {
 }
 
 void Game::display() {
-    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
