@@ -408,9 +408,10 @@ void Game::display() {
         );
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
+        m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
         glRotatef(m_camera.angle_yz(),1,0,0);
         glRotatef(m_camera.angle_xz(),0,1,0);
-        glTranslatef(-m_player.center().x, -m_player.center().y-1, -m_player.center().z);
+        glTranslatef(-m_player.center().x, -m_camera.position().y, -m_camera.position().z);
     }
 
     m_arena.set_active_lights(m_active_lights);
