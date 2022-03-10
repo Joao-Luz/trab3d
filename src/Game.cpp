@@ -10,6 +10,9 @@
 
 #include "Textures.h"
 
+#define min(a, b) a < b ? a : b
+#define max(a, b) a > b ? a : b
+
 Game::Game() {
     std::cout << "Init\n"; 
 
@@ -17,10 +20,14 @@ Game::Game() {
     for (int i = 0; i < 8; i++) m_active_lights[i] = false;
     m_show_axes = false;
     m_textures = std::unordered_map<std::string, int>();
+
     m_last_x = m_last_y = 0;
     m_last_phi = m_last_theta = 0;
     m_phi = m_theta = 0;
     m_yz = m_xz = 0;
+
+    m_dt = 0;
+    m_gravity = 200;
 }
 
 void glut_display() {
@@ -89,8 +96,7 @@ void Game::load_arena(std::string path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height);
-    m_player.set_max_velocity(height*6);
+    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/2);
     m_arena = Arena(arena_width, arena_height, this);
 
     for (int i = 0; i < 8; i++) {
@@ -266,6 +272,7 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
 
     if (key == 'u') {
         std::cout << m_camera.position().x << " " << m_camera.position().y << " " << m_camera.position().z << '\n';
+        std::cout << m_camera.center().x << " " << m_camera.center().y << " " << m_camera.center().z << '\n';
     }
 
     if (key == 'p') {
@@ -282,8 +289,9 @@ void Game::handle_key_up(unsigned char key, int x, int y) {
     m_key_state[tolower(key)] = false;
 }
 
-void Game::update(float dt) {
+void Game::handle_key_state() {
     v3f velocity = {0, 0, 0};
+    float jump_velocity = m_player.velocity().y;
 
     v3f front  = m_camera.direction().normalize();
     front.y = 0;
@@ -306,12 +314,73 @@ void Game::update(float dt) {
         velocity = velocity + left;
     }
 
+    if (m_key_state[' ']) {
+        if (m_player.grounded()) {
+            m_player.set_grounded(false);
+            jump_velocity += m_player.jump_velocity();
+        }
+    } else {
+        if (!m_player.grounded() && jump_velocity > 0) {
+            jump_velocity = jump_velocity/2;
+        }
+    }
+
     if (velocity != (v3f){0, 0, 0}) {
         velocity = velocity.normalize();
-        v3f displacement = velocity * dt * m_player.max_velocity();
-        m_player.translate(displacement);
-        m_camera.translate(displacement);
     }
+
+    m_player.set_velocity(velocity*m_player.max_velocity());
+    m_player.set_velocity_y(jump_velocity);
+}
+
+void Game::handle_player_movement() {
+    m_player.increase_velocity(0, -m_gravity*m_dt, 0);
+
+    v3f next_position = m_player.center() + m_player.velocity()*m_dt;
+
+    // handle walls, floor and ceiling collision
+    if ((next_position.z - m_player.radius()) < 0) {
+        m_player.set_velocity_z(0);
+        m_player.set_center_z(m_player.radius());
+    }
+
+    if ((next_position.z + m_player.radius()) > m_arena.length()) {
+        m_player.set_velocity_z(0);
+        m_player.set_center_z(m_arena.length() - m_player.radius());
+    }
+
+    if ((next_position.x - m_player.radius()) < 0) {
+        m_player.set_velocity_x(0);
+        m_player.set_center_x(m_player.radius());
+    }
+
+    if ((next_position.x + m_player.radius()) > m_arena.width()) {
+        m_player.set_velocity_x(0);
+        m_player.set_center_x(m_arena.width() - m_player.radius());
+    }
+
+    if ((next_position.y - m_player.height()/2) < 0) {
+        m_player.set_velocity_y(0);
+        m_player.set_center_y(m_player.height()/2);
+        m_player.set_grounded(true);
+    }
+
+    if ((next_position.y + m_player.height()/2) > m_arena.height()) {
+        m_player.set_velocity_y(0);
+        m_player.set_center_y(m_arena.height() - m_player.height()/2);
+    }
+
+    v3f displacement = m_player.velocity() * m_dt;
+
+
+    m_player.translate(displacement);
+    m_camera.translate(displacement);
+}
+
+void Game::update(float dt) {
+    m_dt = dt;
+    handle_key_state();
+    handle_player_movement();
 }
 
 void Game::display() {

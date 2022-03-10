@@ -10,8 +10,11 @@ private:
     float m_height;
     float m_radius;
     float m_max_velocity;
+    float m_jump_velocity;
+
+    bool m_grounded;
 public:
-    Player(float x, float y, float z, float height);
+    Player(float x, float y, float z, float height, float radius);
 
     Player() {}
     ~Player() {}
@@ -24,6 +27,18 @@ public:
 
     float max_velocity() { return m_max_velocity; }
     void set_max_velocity(float max_velocity) { m_max_velocity = max_velocity; }
+
+    float jump_velocity() { return m_jump_velocity; }
+    void set_jump_velocity(float jump_velocity) { m_jump_velocity = jump_velocity; }
+
+    bool grounded() { return m_grounded; }
+    void set_grounded(float grounded) { m_grounded = grounded; }
+
+    void set_center(v3f position) { m_position = position - (center() - m_position); }
+    void set_center(float x, float y, float z) { set_center({x, y, z}); }
+    void set_center_x(float x) { set_center({x, center().y, center().z}); }
+    void set_center_y(float y) { set_center({center().x, y, center().z}); }
+    void set_center_z(float z) { set_center({center().x, center().y, z}); }
 
     void display();
     v3f center();

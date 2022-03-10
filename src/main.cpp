@@ -9,9 +9,6 @@
 
 #include "Game.h"
 
-#define min(a, b) a < b ? a : b
-#define max(a, b) a > b ? a : b
-
 Game game;
 
 int main(int argc, char** argv) {

@@ -23,13 +23,19 @@ private:
     float m_last_phi, m_last_theta;
     float m_phi, m_theta;
     float m_yz, m_xz;
+    
     bool m_key_state[256];
     bool m_show_axes;
     bool m_active_lights[8];
 
+    float m_dt;
+    float m_gravity;
+
     void load(std::string level_file_path);
     void load_arena(std::string path);
     void load_texture(std::string path, std::string name);
+    void handle_key_state();
+    void handle_player_movement();
 public:
     Game();
     ~Game() {}

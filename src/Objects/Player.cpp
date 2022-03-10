@@ -8,10 +8,14 @@
 
 namespace objects {
     
-Player::Player(float x, float y, float z, float height) : Object(x, y, z) {
+Player::Player(float x, float y, float z, float height, float radius) : Object(x, y, z) {
     m_height = height;
     m_scale = {height/2, height, height/2};
     m_show_axes = true;
+    m_radius = radius;
+    m_grounded = false;
+    m_max_velocity = height*6;
+    m_jump_velocity = height*12;
 }
 
 void Player::display() {
