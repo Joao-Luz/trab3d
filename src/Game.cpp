@@ -276,8 +276,6 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
         m_active_lights[light_id] = !m_active_lights[light_id]; 
     }
     m_arena.set_active_lights(m_active_lights);
-
-    glutPostRedisplay();
 }
 
 void Game::handle_key_up(unsigned char key, int x, int y) {
@@ -314,8 +312,6 @@ void Game::update(float dt) {
         m_player.translate(displacement);
         m_camera.translate(displacement);
     }
-
-    glutPostRedisplay();
 }
 
 void Game::display() {
@@ -352,6 +348,4 @@ void Game::display() {
     m_player.set_angle_xz(m_xz);
     m_player.display();
     m_player.set_show_axes(m_show_axes);
-
-    glutSwapBuffers();
 }
