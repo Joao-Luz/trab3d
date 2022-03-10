@@ -36,6 +36,9 @@ public:
     virtual v3f center() { return m_position; }
     void set_position(v3f position) { m_position = position; }
     void set_position(float x, float y, float z) { m_position = {x, y, z}; }
+    void set_position_x(float x) { m_position = {x, m_position.y, m_position.z }; }
+    void set_position_y(float y) { m_position = {m_position.x, y, m_position.z }; }
+    void set_position_z(float z) { m_position = {m_position.x, m_position.y, z }; }
     void translate(float dx, float dy, float dz) { m_position = m_position + (v3f){dx, dy, dz}; }
     void translate(v3f displacement) { m_position = m_position + displacement; }
 
@@ -54,6 +57,9 @@ public:
     v3f velocity() { return m_velocity; }
     void set_velocity(v3f velocity) { m_velocity = velocity; }
     void set_velocity(float x, float y, float z) { m_velocity = {x, y, z}; }
+    void set_velocity_x(float vx) { m_velocity = {vx, m_velocity.y, m_velocity.z }; }
+    void set_velocity_y(float vy) { m_velocity = {m_velocity.x, vy, m_velocity.z }; }
+    void set_velocity_z(float vz) { m_velocity = {m_velocity.x, m_velocity.y, vz }; }
     void increase_velocity(v3f dv) { m_velocity = m_velocity + dv; }
     void increase_velocity(float x, float y, float z) { m_velocity = m_velocity + (v3f){x, y, z}; }
 
