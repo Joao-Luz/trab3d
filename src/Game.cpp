@@ -373,8 +373,44 @@ void Game::handle_player_movement() {
         m_player.set_center_y(m_arena.height() - m_player.height()/2);
     }
 
-    v3f displacement = m_player.velocity() * m_dt;
+    // plataform collision
+    for (auto plataform : m_arena.plataforms()) {
+        v3f center = plataform.center();
+        float width = plataform.scale().x;
+        float height = plataform.scale().y;
+        float radius = m_player.radius();
+        float player_h = m_player.height();
+        if ((next_position.x + radius) > (center.x - width/2) && 
+            (next_position.x - radius) < (center.x + width/2) &&
+            (next_position.y + player_h/2) > (center.y - height/2) &&
+            (next_position.y - player_h/2) < (center.y + height/2)) {
+            
+            // front
+            if ((m_player.center().x + radius) < (plataform.center().x - width/2)) {
+                m_player.set_velocity_x(0);
+            } else 
 
+            // back
+            if ((m_player.center().x - radius) > (plataform.center().x + width/2)) {
+                m_player.set_velocity_x(0);
+            } else
+
+            // top
+            if ((m_player.center().y + player_h/2) < (plataform.center().y - height/2)) {
+                m_player.set_velocity_y(0);
+            } else
+
+            // bottom
+            if ((m_player.center().y - player_h/2) > (plataform.center().y + height/2)) {
+                m_player.set_velocity_y(0);
+                m_player.set_grounded(true);
+            }
+        }
+    }
+
+    if (m_player.velocity().y != 0) m_player.set_grounded(false);
+
+    v3f displacement = m_player.velocity() * m_dt;
 
     m_player.translate(displacement);
     m_camera.translate(displacement);

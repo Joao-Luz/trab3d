@@ -36,6 +36,8 @@ public:
     void set_active_lights(bool vals[8]) { for (int i = 0; i < 8; i++) m_active_lights[i] = vals[i]; }
     void set_active_lights(bool val, int i) { m_active_lights[i] = val; }
 
+    std::vector<objects::Box> plataforms() { return m_plataforms; }
+
     void load_arena_from_file(const char* path);
     void add_plataform(float x, float y, float width, float height);
     void display();
