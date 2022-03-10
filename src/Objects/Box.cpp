@@ -93,10 +93,10 @@ void Box::display() {
 
         // left
         Plane left(
+            {(v3f){m_scale.x, 0, 0}},
             {(v3f){0, 0, 0}},
             {(v3f){0, m_scale.y, 0}},
             {(v3f){m_scale.x, m_scale.y, 0}},
-            {(v3f){m_scale.x, 0, 0}},
             m_faces_subdivisions
         );
         left.set_should_set_material(false);

@@ -81,10 +81,10 @@ void Arena::display() {
     left_wall.display();
 
     objects::Plane right_wall(
-        {0, m_dimensions.y, m_dimensions.z},
-        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
         {m_dimensions.x, 0, m_dimensions.z},
         {0, 0, m_dimensions.z},
+        {0, m_dimensions.y, m_dimensions.z},
+        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
         subdivisions
     );
     right_wall.set_color(1, 1, 1, 1);
