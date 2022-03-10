@@ -148,6 +148,7 @@ void Game::load(std::string level_file_path) {
     load_texture("assets/wall.bmp", "wall");
     load_texture("assets/floor.bmp", "floor");
     load_texture("assets/block.bmp", "block");
+    load_texture("assets/light.bmp", "light");
     load_arena(level_file_path);
 }
 

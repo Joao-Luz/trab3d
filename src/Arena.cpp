@@ -6,23 +6,25 @@
 
 #include "Game.h"
 #include "Objects/Plane.h"
+#include <random>
 
 Arena::Arena(float width, float height, Game* game) : m_game(game) {
     m_dimensions = {width, height, height/2};
-
     for (int i = 0; i < 3; i++) {
         float x = i*m_dimensions.x/3 + m_dimensions.x/6;
+        float y = (float)rand()/RAND_MAX*m_dimensions.y/3;
         objects::LightSource light_left(
-            {x, m_dimensions.y/2, 0.5, 1.0},
+            {x, y, 0.5, 1.0},
             {0.7, 0.7, 0.7, 1}, // ambient
             {0.2f, 0.2f, 0.2f, 0.2f}, // diffuse
             {1.0f, 1.0f, 1.0f, 1.0f}, // specular
             2*i
         );
         m_lights[2*i] = light_left;
-        
+
+         y = (float)rand()/RAND_MAX*2*m_dimensions.y/3 + m_dimensions.y/3;
         objects::LightSource light_right(
-            {x, m_dimensions.y/2, m_dimensions.z-0.5f, 1.0},
+            {x, y, m_dimensions.z-0.5f, 1.0},
             {0.7, 0.7, 0.7, 1}, // ambient
             {0.2f, 0.2f, 0.2f, 0.2f}, // diffuse
             {1.0f, 1.0f, 1.0f, 1.0f}, // specular
@@ -46,6 +48,14 @@ void Arena::display() {
         m_lights[i].set_active(m_active_lights[i]);
         m_lights[i].set_show_axes(m_show_axes);
         m_lights[i].display();
+
+        objects::Box lamp(m_lights[i].position() - (v3f){5, 10, 0.125}, {20, 10, 0.25});
+        lamp.set_show_axes(m_show_axes);
+        lamp.set_angle_xy(90);
+        lamp.set_emission(1, 1, 0.7, 1);
+        lamp.set_texture(m_game->get_texture("light"));
+        lamp.display();
+
     }
 
     v4f specular = {0.2, 0.2, 0.2, 0.2};

@@ -1,17 +1,14 @@
-#include <iostream>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include <filesystem>
-#include <cmath>
-
-#include <tinyxml2.h>
+#include <iostream>
+#include <random>
+#include <ctime>
 
 #include "Game.h"
 
 Game game;
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
     if (argc < 2 || !std::filesystem::exists(argv[1])) {
         std::cout << "Please, provide a valid level file directory\n";
         return 0;
