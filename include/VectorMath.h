@@ -80,6 +80,14 @@ public:
         return { this->x * scalar, this->y * scalar, this->z * scalar };
     }
 
+    bool operator == (v3f that) {
+        return (this->x == that.x && this->y == that.y && this->z == that.z);
+    }
+
+    bool operator != (v3f that) {
+        return !(this->x == that.x && this->y == that.y && this->z == that.z);
+    }
+
     v3f cross(v3f that) {
         v3f crossed = {
             this->y*that.z - this->z*that.y,
