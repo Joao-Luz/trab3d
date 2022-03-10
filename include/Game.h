@@ -5,7 +5,7 @@
 
 #include "Objects/Camera.h"
 #include "Objects/Object.h"
-#include "Objects/Player.h"
+#include "Objects/Character.h"
 #include "Arena.h"
 
 class Game {
@@ -17,7 +17,7 @@ private:
 
     Arena m_arena;
     objects::Camera m_camera;
-    objects::Player m_player;
+    objects::Character m_player;
 
     int m_last_x, m_last_y;
     float m_last_phi, m_last_theta;

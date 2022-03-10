@@ -5,19 +5,20 @@
 
 namespace objects {
 
-class Player : public Object{
+class Character : public Object{
 private:
     float m_height;
     float m_radius;
     float m_max_velocity;
     float m_jump_velocity;
+    float m_clock;
 
     bool m_grounded;
 public:
-    Player(float x, float y, float z, float height, float radius);
+    Character(float x, float y, float z, float height, float radius);
 
-    Player() {}
-    ~Player() {}
+    Character() {}
+    ~Character() {}
 
     float height() { return m_height; }
     void set_height(float height) { m_height = height; }
@@ -30,6 +31,10 @@ public:
 
     float jump_velocity() { return m_jump_velocity; }
     void set_jump_velocity(float jump_velocity) { m_jump_velocity = jump_velocity; }
+
+    float clock() { return m_clock; }
+    void set_clock(float clock) { m_clock = clock; }
+    void increase_clock(float dt) { m_clock += dt; }
 
     bool grounded() { return m_grounded; }
     void set_grounded(float grounded) { m_grounded = grounded; }

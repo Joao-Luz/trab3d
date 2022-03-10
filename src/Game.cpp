@@ -96,7 +96,7 @@ void Game::load_arena(std::string path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/2);
+    m_player = objects::Character(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/4);
     m_arena = Arena(arena_width, arena_height, this);
 
     for (int i = 0; i < 8; i++) {

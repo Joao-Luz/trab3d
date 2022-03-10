@@ -1,4 +1,4 @@
-#include "Objects/Player.h"
+#include "Objects/Character.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -8,7 +8,7 @@
 
 namespace objects {
     
-Player::Player(float x, float y, float z, float height, float radius) : Object(x, y, z) {
+Character::Character(float x, float y, float z, float height, float radius) : Object(x, y, z) {
     m_height = height;
     m_scale = {height/2, height, height/2};
     m_show_axes = true;
@@ -16,9 +16,10 @@ Player::Player(float x, float y, float z, float height, float radius) : Object(x
     m_grounded = false;
     m_max_velocity = height*6;
     m_jump_velocity = height*12;
+    m_clock = 0.0f;
 }
 
-void Player::display() {
+void Character::display() {
 
     glPushMatrix();
     v3f center = this->center();
@@ -35,7 +36,7 @@ void Player::display() {
     glPopMatrix();
 }
 
-v3f Player::center() {
+v3f Character::center() {
     Box body(m_position, {m_height/2, m_height, m_height/2});
     return body.center();
 }

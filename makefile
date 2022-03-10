@@ -17,7 +17,7 @@ SRC = src/main.cpp \
 	  src/Objects/LightSource.cpp \
 	  src/Objects/Object.cpp \
 	  src/Objects/Plane.cpp \
-	  src/Objects/Player.cpp \
+	  src/Objects/Character.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
@@ -30,7 +30,7 @@ HEADERS = include/Arena.h \
 		  include/Objects/LightSource.h \
 	  	  include/Objects/Object.h \
 	  	  include/Objects/Plane.h \
-		  include/Objects/Player.h \
+		  include/Objects/Character.h \
 		  lib/tinyxml2.h
 
 OBJECTS := $(SRC:%.cpp=build/%.o)
