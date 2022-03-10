@@ -29,12 +29,6 @@ void LightSource::display() {
         return;
     }
 
-    Box box(m_position - (v3f){0.5, 0.5, 0.5}, {1, 1, 1});
-    box.set_show_axes(m_show_axes);
-    box.set_color(1, 1, 0, 1);
-    box.set_emission(1, 1, 0, 1);
-    box.display();
-
     float light_params[4][4] = {
         {m_ambient_light.x,  m_ambient_light.y,  m_ambient_light.z,  m_ambient_light.w},
         {m_diffuse_light.x,  m_diffuse_light.y,  m_diffuse_light.z,  m_diffuse_light.w},
