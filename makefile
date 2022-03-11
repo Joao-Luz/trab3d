@@ -11,26 +11,30 @@ SRC = src/main.cpp \
 	  src/Arena.cpp \
 	  src/Game.cpp \
 	  src/Textures.cpp \
-	  src/Objects/Camera.cpp \
 	  src/Objects/Axes.cpp \
 	  src/Objects/Box.cpp \
+	  src/Objects/Camera.cpp \
+	  src/Objects/Character.cpp \
+	  src/Objects/Enemy.cpp \
 	  src/Objects/LightSource.cpp \
 	  src/Objects/Object.cpp \
 	  src/Objects/Plane.cpp \
-	  src/Objects/Character.cpp \
+	  src/Objects/Player.cpp \
 	  lib/tinyxml2.cpp
 
 HEADERS = include/Arena.h \
 		  include/Game.h \
 		  include/Textures.h \
 		  include/VectorMath.h \
-		  include/Objects/Camera.h \
 		  include/Objects/Axes.h \
 		  include/Objects/Box.h \
+		  include/Objects/Camera.h \
+		  include/Objects/Character.h \
+		  include/Objects/Enemy.h \
 		  include/Objects/LightSource.h \
 	  	  include/Objects/Object.h \
 	  	  include/Objects/Plane.h \
-		  include/Objects/Character.h \
+		  include/Objects/Player.h \
 		  lib/tinyxml2.h
 
 OBJECTS := $(SRC:%.cpp=build/%.o)
