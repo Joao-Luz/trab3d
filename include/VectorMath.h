@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <ostream>
 
 class v4f {
 private:
@@ -88,6 +89,10 @@ public:
         return !(this->x == that.x && this->y == that.y && this->z == that.z);
     }
 
+    friend std::ostream& operator << (std::ostream& os, v3f const& vec) { 
+        return os << "[ " << vec.x << ", " << vec.y << ", " << vec.z << " ]";
+    }
+
     v3f cross(v3f that) {
         v3f crossed = {
             this->y*that.z - this->z*that.y,
@@ -95,6 +100,10 @@ public:
             this->x*that.y - this->y*that.x,
         };
         return crossed.normalize();
+    }
+
+    float dot(v3f that) {
+        return this->x*that.x + this->y*that.y + this->z*that.z;
     }
 
     float norm() {
