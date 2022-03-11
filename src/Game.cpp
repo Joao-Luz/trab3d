@@ -247,7 +247,6 @@ void Game::handle_mouse_move(int x, int y) {
     }
 
     m_warping = true;
-    if (m_focused)
         glutWarpPointer(m_window_width/2, m_window_height/2);
 }
 
