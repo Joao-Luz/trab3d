@@ -108,4 +108,40 @@ void Player::display() {
     glPopMatrix();
 }
 
+void Player::arena_collision(Arena arena, float dt) {
+    v3f next_position = this->center() + m_velocity*dt;
+
+    if ((next_position.z - m_radius) < 0) {
+        set_velocity_z(0);
+        set_center_z(m_radius);
+    }
+
+    if ((next_position.z + m_radius) > arena.length()) {
+        set_velocity_z(0);
+        set_center_z(arena.length() - m_radius);
+    }
+
+    if ((next_position.x - m_radius) < 0) {
+        set_velocity_x(0);
+        set_center_x(m_radius);
+    }
+
+    if ((next_position.x + m_radius) > arena.width()) {
+        set_velocity_x(0);
+        set_center_x(arena.width() - m_radius);
+    }
+
+    if ((next_position.y - m_height/2) < 0) {
+        set_velocity_y(0);
+        set_center_y(m_height/2);
+        set_grounded(true);
+    }
+
+    if ((next_position.y + m_height/2) > arena.height()) {
+        set_velocity_y(0);
+        set_center_y(arena.height() - m_height/2);
+    }
+
+}
+
 }

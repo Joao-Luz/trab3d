@@ -54,7 +54,7 @@ public:
     void set_center_z(float z) { set_center({center().x, center().y, z}); }
 
     virtual void plataform_collision(Box plataform, float dt) {}
-    virtual void arena_collision(Arena arena, float dt);
+    virtual void arena_collision(Arena arena, float dt) {}
 
     virtual void display() {}
     v3f center();

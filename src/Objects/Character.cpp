@@ -26,40 +26,4 @@ v3f Character::center() {
     return body.center();
 }
 
-void Character::arena_collision(Arena arena, float dt) {
-    v3f next_position = this->center() + m_velocity*dt;
-
-    if ((next_position.z - m_radius) < 0) {
-        set_velocity_z(-m_velocity.z);
-        set_center_z(m_radius);
-    }
-
-    if ((next_position.z + m_radius) > arena.length()) {
-        set_velocity_z(-m_velocity.z);
-        set_center_z(arena.length() - m_radius);
-    }
-
-    if ((next_position.x - m_radius) < 0) {
-        set_velocity_x(-m_velocity.x);
-        set_center_x(m_radius);
-    }
-
-    if ((next_position.x + m_radius) > arena.width()) {
-        set_velocity_x(-m_velocity.x);
-        set_center_x(arena.width() - m_radius);
-    }
-
-    if ((next_position.y - m_height/2) < 0) {
-        set_velocity_y(0);
-        set_center_y(m_height/2);
-        set_grounded(true);
-    }
-
-    if ((next_position.y + m_height/2) > arena.height()) {
-        set_velocity_y(0);
-        set_center_y(arena.height() - m_height/2);
-    }
-
-}
-
 }

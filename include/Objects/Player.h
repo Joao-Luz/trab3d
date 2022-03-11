@@ -14,6 +14,7 @@ public:
     ~Player() {}
 
     void plataform_collision(Box plataform, float dt);
+    void arena_collision(Arena arena, float dt);
     void enemy_collision(Enemy* enemy, float dt);
     void display();
 };
