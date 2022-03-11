@@ -235,19 +235,11 @@ void Game::handle_mouse_move(int x, int y) {
     );
 
     v3f player_direction = { m_camera.direction().x, 0, m_camera.direction().z };
-    m_player.set_direction(player_direction);
-
-    if (m_camera.mode() == objects::Camera::orbital) {
-        float rho = 3*m_player.height();
-        m_camera.set_position(
-            rho*sin(m_phi - M_PI_2)*cos(m_theta) + m_player.center().x,
-            rho*sin(m_theta) + m_player.center().y,
-            rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
-        );
-    }
+    m_player.set_direction(player_direction.normalize());
+    m_player.set_aim(m_camera.direction());
 
     m_warping = true;
-        glutWarpPointer(m_window_width/2, m_window_height/2);
+    glutWarpPointer(m_window_width/2, m_window_height/2);
 }
 
 void Game::handle_key_down(unsigned char key, int x, int y) {
@@ -269,8 +261,8 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
     }
 
     if (key == 'u') {
-        std::cout << m_camera.position().x << " " << m_camera.position().y << " " << m_camera.position().z << '\n';
-        std::cout << m_camera.center().x << " " << m_camera.center().y << " " << m_camera.center().z << '\n';
+        std::cout << "Camera position: " << m_camera.position() << '\n';
+        std::cout << "Camera direction: " << m_camera.direction() << '\n';
     }
 
     if (key == 'p') {
@@ -353,7 +345,6 @@ void Game::handle_player_movement() {
 
     m_player.translate(displacement);
     m_camera.translate(displacement);
-    m_player.set_aim(m_camera.direction());
 }
 
 void Game::handle_enemy_movement(objects::Character* enemy) {
