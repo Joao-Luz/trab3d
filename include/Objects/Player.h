@@ -15,6 +15,7 @@ public:
 
     void plataform_collision(Box plataform, float dt);
     void enemy_collision(Enemy* enemy, float dt);
+    void display();
 };
 
 }

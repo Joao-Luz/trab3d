@@ -20,25 +20,6 @@ Character::Character(float x, float y, float z, float height, float radius) : Ob
     m_direction = {1, 0, 0};
 }
 
-void Character::display() {
-
-    glPushMatrix();
-    v3f center = this->center();
-
-    glTranslatef(center.x, m_position.y, center.z);
-
-    v3f rotation_vector = (v3f){1, 0, 0}.cross(m_direction);
-    float angle = 180*acos(m_direction.normalize().dot({1, 0, 0}))/M_PI;
-
-    glRotatef(angle, rotation_vector.x, rotation_vector.y, rotation_vector.z);
-
-    Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
-    body.set_show_axes(m_show_axes);
-    body.display();
-
-    glPopMatrix();
-}
-
 v3f Character::center() {
     Box body(m_position, {m_height/2, m_height, m_height/2});
     return body.center();

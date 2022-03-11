@@ -50,7 +50,7 @@ public:
     virtual void plataform_collision(Box plataform, float dt) {}
     virtual void arena_collision(Arena arena, float dt);
 
-    void display();
+    virtual void display() {}
     v3f center();
 };
 

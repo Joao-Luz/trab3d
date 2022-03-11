@@ -15,6 +15,7 @@ public:
     ~Enemy() {}
 
     void plataform_collision(Box plataform, float dt);
+    void display();
 };
 
 
