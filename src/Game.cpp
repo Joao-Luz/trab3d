@@ -14,7 +14,6 @@
 #define max(a, b) a > b ? a : b
 
 Game::Game() {
-    std::cout << "Init\n"; 
 
     for (int i = 0; i < 256; i++) m_key_state[i] = false;
     for (int i = 0; i < 8; i++) m_active_lights[i] = false;
