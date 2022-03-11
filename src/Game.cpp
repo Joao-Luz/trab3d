@@ -361,7 +361,7 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
     // choose a random direction
     if (enemy->clock() <= 0) {
         if ((float)rand()/RAND_MAX < 0.6) {
-            v3f velocity = (v3f){ (float)(rand()%10), 0, (float)(rand()%10) }.normalize();
+            v3f velocity = (v3f){ (float)(rand()%10+1), 0, (float)(rand()%10+1) }.normalize();
             enemy->set_velocity(velocity * enemy->max_velocity());
         } else {
             enemy->set_velocity_x(0);
