@@ -259,9 +259,9 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
         if (new_mode == objects::Camera::orbital) {
             float rho = 3*m_player.height();
             m_camera.set_position(
-                rho*sin(m_phi)*cos(m_theta) + m_player.center().x,
+                rho*sin(m_phi - M_PI_2)*cos(m_theta) + m_player.center().x,
                 rho*sin(m_theta) + m_player.center().y,
-                rho*cos(m_theta)*cos(m_phi) + m_player.center().z
+                rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
             );
         }
     }
