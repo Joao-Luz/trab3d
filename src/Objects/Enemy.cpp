@@ -1,5 +1,6 @@
 #include "Objects/Enemy.h"
 
+#include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -49,19 +50,36 @@ void Enemy::plataform_collision(Box plataform, float dt) {
 void Enemy::display() {
 
     glPushMatrix();
-    v3f center = this->center();
 
-    glTranslatef(center.x, m_position.y, center.z);
+        v3f center = this->center();
 
-    v3f rotation_vector = (v3f){1, 0, 0}.cross(m_direction);
-    float angle = 180*acos(m_direction.normalize().dot({1, 0, 0}))/M_PI;
+        glTranslatef(center.x, m_position.y, center.z);
 
-    glRotatef(angle, rotation_vector.x, rotation_vector.y, rotation_vector.z);
+        v3f rotation_vector = (v3f){1, 0, 0}.cross(m_direction);
+        float angle = 180*acos(m_direction.normalize().dot({1, 0, 0}))/M_PI;
 
-    Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
-    body.set_color(0.9, 0.2, 0.1, 1);
-    body.set_show_axes(m_show_axes);
-    body.display();
+        glRotatef(angle, rotation_vector.x, rotation_vector.y, rotation_vector.z);
+
+        glPushMatrix();
+            glTranslatef(0, 3*m_height/4, m_height/4);
+            float cos = m_direction.dot(m_aim);
+            if (cos > 1) cos = 1.0f;
+            if (cos < -1) cos = -1.0f;
+            angle = 180*acos(cos)/M_PI;
+
+            if (m_aim.y <= 0) angle = -angle;
+
+            glRotatef(angle, 0, 0, 1);
+            Box arm({-m_height/12, 0, 0}, {m_height/2, m_height/6, m_height/6});
+            arm.set_color(0.9, 0.2, 0.1, 1);
+            arm.display();
+        glPopMatrix();
+
+
+        Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
+        body.set_color(0.9, 0.2, 0.1, 1);
+        body.set_show_axes(m_show_axes);
+        body.display();
 
     glPopMatrix();
 }

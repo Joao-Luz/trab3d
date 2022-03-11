@@ -18,6 +18,7 @@ Character::Character(float x, float y, float z, float height, float radius) : Ob
     m_jump_velocity = height*12;
     m_clock = 0.0f;
     m_direction = {1, 0, 0};
+    m_aim = {1, 0, 0};
 }
 
 v3f Character::center() {

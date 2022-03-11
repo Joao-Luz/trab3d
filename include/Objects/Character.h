@@ -15,6 +15,8 @@ protected:
     float m_jump_velocity;
     float m_clock;
 
+    v3f m_aim;
+
     bool m_grounded;
 public:
     Character(float x, float y, float z, float height, float radius);
@@ -37,6 +39,10 @@ public:
     float clock() { return m_clock; }
     void set_clock(float clock) { m_clock = clock; }
     void increase_clock(float dt) { m_clock += dt; }
+
+    v3f aim() { return m_aim; }
+    void set_aim(v3f aim) { m_aim = aim; }
+    void set_aim(float x, float y, float z) { m_aim = {x, y, z}; }
 
     bool grounded() { return m_grounded; }
     void set_grounded(float grounded) { m_grounded = grounded; }

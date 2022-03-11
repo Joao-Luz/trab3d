@@ -350,6 +350,7 @@ void Game::handle_player_movement() {
 
     m_player.translate(displacement);
     m_camera.translate(displacement);
+    m_player.set_aim(m_camera.direction());
 }
 
 void Game::handle_enemy_movement(objects::Character* enemy) {
@@ -384,8 +385,17 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
     enemy->translate(displacement);
 
     // look at player
-    v3f direction = (m_player.center() - enemy->center()).normalize();
-    enemy->set_direction(direction.x, 0, direction.z);
+    v3f direction = (m_player.center() - enemy->center());
+    enemy->set_direction((v3f){direction.x, 0, direction.z}.normalize());
+    enemy->set_aim(direction.normalize());
+
+    // limit xy rotation to 60 degrees
+    if (enemy->aim().dot(enemy->direction()) <= 0.5) {
+        float s = sin(M_PI/3);
+        if (enemy->aim().y < 0) s = -s;
+        v3f aim = { (enemy->direction()*0.5).x, s, (enemy->direction()*0.5).z };
+        enemy->set_aim(aim.normalize());
+    }
 }
 
 void Game::update(float dt) {
