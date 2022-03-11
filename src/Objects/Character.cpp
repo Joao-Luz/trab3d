@@ -17,6 +17,7 @@ Character::Character(float x, float y, float z, float height, float radius) : Ob
     m_max_velocity = height*6;
     m_jump_velocity = height*12;
     m_clock = 0.0f;
+    m_direction = {1, 0, 0};
 }
 
 void Character::display() {
@@ -26,8 +27,10 @@ void Character::display() {
 
     glTranslatef(center.x, m_position.y, center.z);
 
-    glRotatef(m_angle.x,1,0,0);
-    glRotatef(90-m_angle.y,0,1,0);
+    v3f rotation_vector = (v3f){1, 0, 0}.cross(m_direction);
+    float angle = 180*acos(m_direction.normalize().dot({1, 0, 0}))/M_PI;
+
+    glRotatef(angle, rotation_vector.x, rotation_vector.y, rotation_vector.z);
 
     Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
     body.set_show_axes(m_show_axes);
@@ -39,6 +42,42 @@ void Character::display() {
 v3f Character::center() {
     Box body(m_position, {m_height/2, m_height, m_height/2});
     return body.center();
+}
+
+void Character::arena_collision(Arena arena, float dt) {
+    v3f next_position = this->center() + m_velocity*dt;
+
+    if ((next_position.z - m_radius) < 0) {
+        set_velocity_z(-m_velocity.z);
+        set_center_z(m_radius);
+    }
+
+    if ((next_position.z + m_radius) > arena.length()) {
+        set_velocity_z(-m_velocity.z);
+        set_center_z(arena.length() - m_radius);
+    }
+
+    if ((next_position.x - m_radius) < 0) {
+        set_velocity_x(-m_velocity.x);
+        set_center_x(m_radius);
+    }
+
+    if ((next_position.x + m_radius) > arena.width()) {
+        set_velocity_x(-m_velocity.x);
+        set_center_x(arena.width() - m_radius);
+    }
+
+    if ((next_position.y - m_height/2) < 0) {
+        set_velocity_y(0);
+        set_center_y(m_height/2);
+        set_grounded(true);
+    }
+
+    if ((next_position.y + m_height/2) > arena.height()) {
+        set_velocity_y(0);
+        set_center_y(arena.height() - m_height/2);
+    }
+
 }
 
 }

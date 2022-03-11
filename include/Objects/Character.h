@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Objects/Object.h"
+#include "Arena.h"
+#include "./Box.h"
+#include "./Object.h"
 #include "VectorMath.h"
 
 namespace objects {
 
 class Character : public Object{
-private:
+protected:
     float m_height;
     float m_radius;
     float m_max_velocity;
@@ -44,6 +46,9 @@ public:
     void set_center_x(float x) { set_center({x, center().y, center().z}); }
     void set_center_y(float y) { set_center({center().x, y, center().z}); }
     void set_center_z(float z) { set_center({center().x, center().y, z}); }
+
+    virtual void plataform_collision(Box plataform, float dt) {}
+    virtual void arena_collision(Arena arena, float dt);
 
     void display();
     v3f center();

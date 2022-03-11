@@ -6,7 +6,8 @@
 
 #include "Objects/Camera.h"
 #include "Objects/Object.h"
-#include "Objects/Character.h"
+#include "Objects/Player.h"
+#include "Objects/Enemy.h"
 #include "Arena.h"
 
 class Game {
@@ -18,13 +19,12 @@ private:
 
     Arena m_arena;
     objects::Camera m_camera;
-    objects::Character m_player;
-    std::vector<objects::Character> m_enemies;
+    objects::Player m_player;
+    std::vector<objects::Enemy> m_enemies;
 
     int m_last_x, m_last_y;
     float m_last_phi, m_last_theta;
     float m_phi, m_theta;
-    float m_yz, m_xz;
     
     bool m_key_state[256];
     bool m_show_axes;
@@ -41,9 +41,6 @@ private:
     void handle_player_movement();
     void handle_enemy_movement(objects::Character* enemy);
     void add_enemy(float x, float y, float z, float height, float radius);
-    void enemy_plataform_collision(objects::Character* character);
-    void player_plataform_collision();
-    void player_enemy_collision(objects::Character* enemy);
 public:
     Game();
     ~Game() {}

@@ -20,12 +20,11 @@ Game::Game() {
     for (int i = 0; i < 8; i++) m_active_lights[i] = false;
     m_show_axes = false;
     m_textures = std::unordered_map<std::string, int>();
-    m_enemies = std::vector<objects::Character>();
+    m_enemies = std::vector<objects::Enemy>();
 
     m_last_x = m_last_y = 0;
     m_last_phi = m_last_theta = 0;
     m_phi = m_theta = 0;
-    m_yz = m_xz = 0;
     m_clock = 0;
 
     m_dt = 0;
@@ -98,7 +97,7 @@ void Game::load_arena(std::string path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    m_player = objects::Character(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/4);
+    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/4);
     m_arena = Arena(arena_width, arena_height, this);
 
     for (int i = 0; i < 8; i++) {
@@ -112,7 +111,6 @@ void Game::load_arena(std::string path) {
         m_player.center().z + 3*height
     };
     m_camera = objects::Camera(camera_position);
-    m_camera.set_direction({1, 0, 0});
 
     // plataforms
     for (auto rect = level.FirstChild()->FirstChildElement("rect"); rect != nullptr; rect = rect->NextSiblingElement("rect")) {
@@ -136,7 +134,7 @@ void Game::load_arena(std::string path) {
 }
 
 void Game::add_enemy(float x, float y, float z, float height, float radius) {
-    objects::Character enemy(x, y, z, height, radius);
+    objects::Enemy enemy(x, y, z, height, radius);
     enemy.set_max_velocity(enemy.height()*2);
     enemy.set_velocity((v3f){(float)(rand()%10), 0, (float)(rand()%10)}.normalize()*enemy.max_velocity());
     m_enemies.push_back(enemy);
@@ -231,29 +229,21 @@ void Game::handle_mouse_move(int x, int y) {
     m_theta = m_last_theta + dtheta;
     m_theta = clamp(m_theta, -M_PI/3, M_PI/3);
 
-    m_yz = 180*(m_theta)/M_PI;
-    m_xz = -180*(m_phi)/M_PI;
+    m_camera.set_direction(
+        -sin(m_phi - M_PI_2)*cos(m_theta),
+        -sin(m_theta),
+        -cos(m_theta)*cos(m_phi - M_PI_2)
+    );
 
-    float rho = 3*m_player.height();
+    v3f player_direction = { m_camera.direction().x, 0, m_camera.direction().z };
+    m_player.set_direction(player_direction);
 
     if (m_camera.mode() == objects::Camera::orbital) {
-
+        float rho = 3*m_player.height();
         m_camera.set_position(
-            rho*sin(m_phi)*cos(m_theta) + m_player.center().x,
+            rho*sin(m_phi - M_PI_2)*cos(m_theta) + m_player.center().x,
             rho*sin(m_theta) + m_player.center().y,
-            rho*cos(m_theta)*cos(m_phi) + m_player.center().z
-        );
-
-        m_camera.set_direction(m_player.center() - m_camera.position());
-    }
-
-    else if (m_camera.mode() == objects::Camera::first_person) {
-        m_camera.set_angle(m_yz, m_xz, 0);
-
-        m_camera.set_direction(
-            -sin(m_phi)*cos(m_theta),
-            -sin(m_theta),
-            -cos(m_theta)*cos(m_phi)
+            rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
         );
     }
 }
@@ -266,18 +256,13 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
         auto new_mode = (objects::Camera::camera_mode)((m_camera.mode() + 1)%2);
         m_camera.set_mode(new_mode);
 
-        if (new_mode == objects::Camera::first_person) {
-            m_camera.set_angle(m_yz, m_xz, 0);
-            v3f new_direction = {m_camera.direction().x, 0, -m_camera.direction().z};
-            m_camera.set_direction(new_direction);
-        } else {
+        if (new_mode == objects::Camera::orbital) {
             float rho = 3*m_player.height();
             m_camera.set_position(
                 rho*sin(m_phi)*cos(m_theta) + m_player.center().x,
                 rho*sin(m_theta) + m_player.center().y,
                 rho*cos(m_theta)*cos(m_phi) + m_player.center().z
             );
-            m_camera.set_direction(m_player.center() - m_camera.position());
         }
     }
 
@@ -344,190 +329,20 @@ void Game::handle_key_state() {
     m_player.set_velocity_y(jump_velocity);
 }
 
-void Game::enemy_plataform_collision(objects::Character* enemy) {
-    v3f next_position = enemy->center() + enemy->velocity()*m_dt;
-
-    // handle walls, floor and ceiling collision
-    if ((next_position.z - enemy->radius()) < 0) {
-        enemy->set_velocity_z(-enemy->velocity().z);
-        enemy->set_center_z(enemy->radius());
-    }
-
-    if ((next_position.z + enemy->radius()) > m_arena.length()) {
-        enemy->set_velocity_z(-enemy->velocity().z);
-        enemy->set_center_z(m_arena.length() - enemy->radius());
-    }
-
-    if ((next_position.x - enemy->radius()) < 0) {
-        enemy->set_velocity_x(-enemy->velocity().x);
-        enemy->set_center_x(enemy->radius());
-    }
-
-    if ((next_position.x + enemy->radius()) > m_arena.width()) {
-        enemy->set_velocity_x(-enemy->velocity().x);
-        enemy->set_center_x(m_arena.width() - enemy->radius());
-    }
-
-    if ((next_position.y - enemy->height()/2) < 0) {
-        enemy->set_velocity_y(0);
-        enemy->set_center_y(enemy->height()/2);
-        enemy->set_grounded(true);
-    }
-
-    if ((next_position.y + enemy->height()/2) > m_arena.height()) {
-        enemy->set_velocity_y(0);
-        enemy->set_center_y(m_arena.height() - enemy->height()/2);
-    }
-
-    bool collided_down = false;
-    for (auto plataform : m_arena.plataforms()) {
-        v3f center = plataform.center();
-        float width = plataform.scale().x;
-        float height = plataform.scale().y;
-        float radius = enemy->radius();
-        float player_h = enemy->height();
-        if ((next_position.x + radius) > (center.x - width/2) && 
-            (next_position.x - radius) < (center.x + width/2) &&
-            (next_position.y + player_h/2) > (center.y - height/2) &&
-            (next_position.y - player_h/2) < (center.y + height/2)) {
-            
-            // front
-            if ((enemy->center().x + radius) < (plataform.center().x - width/2)) {
-                enemy->set_velocity_x(-enemy->velocity().x);
-            } else 
-
-            // back
-            if ((enemy->center().x - radius) > (plataform.center().x + width/2)) {
-                enemy->set_velocity_x(-enemy->velocity().x);
-            } else
-
-            // top
-            if ((enemy->center().y + player_h/2) < (plataform.center().y - height/2)) {
-                enemy->set_velocity_y(0);
-            } else
-
-            // bottom
-            if ((enemy->center().y - player_h/2) > (plataform.center().y + height/2)) {
-                enemy->set_velocity_y(0);
-                enemy->set_grounded(true);
-                if ((enemy->center().x + enemy->radius()) >= (center.x + width/2) ||
-                    (enemy->center().x - enemy->radius()) <= (center.x - width/2)) {
-                    enemy->set_velocity_x(-enemy->velocity().x);
-                }
-            }
-        }
-    }
-}
-
-void Game::player_plataform_collision() {
-    v3f next_position = m_player.center() + m_player.velocity()*m_dt;
-
-    // handle walls, floor and ceiling collision
-    if ((next_position.z - m_player.radius()) < 0) {
-        m_player.set_velocity_z(0);
-        m_player.set_center_z(m_player.radius());
-    }
-
-    if ((next_position.z + m_player.radius()) > m_arena.length()) {
-        m_player.set_velocity_z(0);
-        m_player.set_center_z(m_arena.length() - m_player.radius());
-    }
-
-    if ((next_position.x - m_player.radius()) < 0) {
-        m_player.set_velocity_x(0);
-        m_player.set_center_x(m_player.radius());
-    }
-
-    if ((next_position.x + m_player.radius()) > m_arena.width()) {
-        m_player.set_velocity_x(0);
-        m_player.set_center_x(m_arena.width() - m_player.radius());
-    }
-
-    if ((next_position.y - m_player.height()/2) < 0) {
-        m_player.set_velocity_y(0);
-        m_player.set_center_y(m_player.height()/2);
-        m_player.set_grounded(true);
-    }
-
-    if ((next_position.y + m_player.height()/2) > m_arena.height()) {
-        m_player.set_velocity_y(0);
-        m_player.set_center_y(m_arena.height() - m_player.height()/2);
-    }
-
-    for (auto plataform : m_arena.plataforms()) {
-        v3f center = plataform.center();
-        float width = plataform.scale().x;
-        float height = plataform.scale().y;
-        float radius = m_player.radius();
-        float player_h = m_player.height();
-        if ((next_position.x + radius) > (center.x - width/2) && 
-            (next_position.x - radius) < (center.x + width/2) &&
-            (next_position.y + player_h/2) > (center.y - height/2) &&
-            (next_position.y - player_h/2) < (center.y + height/2)) {
-            
-            // front
-            if ((m_player.center().x + radius) < (plataform.center().x - width/2)) {
-                m_player.set_velocity_x(0);
-            } else 
-
-            // back
-            if ((m_player.center().x - radius) > (plataform.center().x + width/2)) {
-                m_player.set_velocity_x(0);
-            } else
-
-            // top
-            if ((m_player.center().y + player_h/2) < (plataform.center().y - height/2)) {
-                m_player.set_velocity_y(0);
-            } else
-
-            // bottom
-            if ((m_player.center().y - player_h/2) > (plataform.center().y + height/2)) {
-                m_player.set_velocity_y(0);
-                m_player.set_grounded(true);
-            }
-        }
-    }
-}
-
-void Game::player_enemy_collision(objects::Character* enemy) {
-    v3f next_player_position = m_player.center() + (m_player.velocity())*m_dt;
-    v3f next_enemy_position = enemy->center() + (enemy->velocity())*m_dt;
-
-    if ((next_player_position.y + m_player.height()/2) > (next_enemy_position.y - enemy->height()/2) &&
-        (next_player_position.y - m_player.height()/2) < (next_enemy_position.y + enemy->height()/2)) {
-        
-        next_player_position.y = 0;
-        next_enemy_position.y = 0;
-        float distance = (next_enemy_position - next_player_position).norm();
-
-        if (distance < (m_player.radius() + enemy->radius())) {
-            // bottom top
-            if ((m_player.center().y - m_player.height()/2) > (enemy->center().y + enemy->height()/2)) {
-                m_player.set_velocity_y(0);
-                m_player.set_grounded(true);
-            // sides
-            } else {
-
-                float a = m_player.velocity().x * enemy->velocity().x;
-                a = a > 0 ? 1 : -1;
-                float b = m_player.velocity().z * enemy->velocity().z;
-                b = b > 0 ? 1 : -1;
-                enemy->set_velocity_x(a*enemy->velocity().x);
-                enemy->set_velocity_z(b*enemy->velocity().z);
-
-                m_player.set_velocity_x(0);
-                m_player.set_velocity_z(0);
-            }
-        }
-    }
-}
-
 void Game::handle_player_movement() {
     m_player.increase_velocity(0, -m_gravity*m_dt, 0);
 
-    player_plataform_collision();
+    // arena collisions
+    m_player.arena_collision(m_arena, m_dt);
+
+    // plataform collisions
+    for (auto plataform : m_arena.plataforms()) {
+        m_player.plataform_collision(plataform, m_dt);
+    }
+
+    // enemy collisions
     for (int i = 0; i < m_enemies.size(); i++) {
-        player_enemy_collision(&m_enemies[i]);
+        m_player.enemy_collision(&m_enemies[i], m_dt);
     }
 
     if (m_player.velocity().y != 0) m_player.set_grounded(false);
@@ -554,7 +369,13 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
 
     enemy->increase_velocity(0, -m_gravity*m_dt, 0);
 
-    enemy_plataform_collision(enemy);
+    // arena collisions
+    enemy->arena_collision(m_arena, m_dt);
+
+    // plataforms collisions
+    for (auto plataform : m_arena.plataforms()) {
+        enemy->plataform_collision(plataform, m_dt);
+    }
 
     if (enemy->velocity().y != 0)
         enemy->set_grounded(true);
@@ -564,7 +385,8 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
     enemy->translate(displacement);
 
     // look at player
-    enemy->set_direction(m_player.center());
+    v3f direction = (m_player.center() - enemy->center()).normalize();
+    enemy->set_direction(direction.x, 0, direction.z);
 }
 
 void Game::update(float dt) {
@@ -599,7 +421,7 @@ void Game::display() {
     m_arena.set_show_axes(m_show_axes);
     m_arena.display();
 
-    m_player.set_angle_xz(m_xz);
+    // m_player.set_angle_xz(m_xz);
     m_player.display();
     m_player.set_show_axes(m_show_axes);
 }
