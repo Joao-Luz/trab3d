@@ -418,7 +418,14 @@ void Game::display() {
     glLoadIdentity();
 
     if (m_camera.mode() == objects::Camera::orbital) {
-        m_camera.look_at(m_player.center());
+        // put in orbit around player
+        float rho = 3*m_player.height();
+        m_camera.set_position(
+            rho*sin(m_phi - M_PI_2)*cos(m_theta) + m_player.center().x,
+            rho*sin(m_theta) + m_player.center().y,
+            rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
+        );
+        m_camera.look_at(m_player.center() + (v3f){0, m_player.height()/2, 0});
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
         m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
