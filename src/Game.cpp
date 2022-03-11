@@ -23,6 +23,7 @@ Game::Game() {
 
     m_last_x = m_last_y = 0;
     m_last_phi = m_last_theta = 0;
+    m_warping = false;
     m_phi = m_theta = 0;
     m_clock = 0;
 
@@ -178,6 +179,7 @@ void Game::init(int window_width, int window_height, std::string window_name, in
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
     float global_amb[] = { 0.1f, 0.1f, 0.1f, 1.f };
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_amb);
+    glutSetCursor(GLUT_CURSOR_NONE);
 
 
     // load data
@@ -191,11 +193,10 @@ void Game::init(int window_width, int window_height, std::string window_name, in
     glutDisplayFunc(glut_display);
     glutIdleFunc(glut_idle);
     glutMotionFunc(glut_mouse_move);
+    glutPassiveMotionFunc(glut_mouse_move);
     glutMouseFunc(glut_mouse_click);
     glutKeyboardFunc(glut_key_down);
     glutKeyboardUpFunc(glut_key_up);
-
-
 }
 
 void Game::run() {
@@ -203,15 +204,6 @@ void Game::run() {
 }
 
 void Game::handle_mouse_click(int button, int state, int x, int y) {
-    if (button == 0 && state == 0) {
-        m_last_x = x;
-        m_last_y = y;
-    }
-
-    else if (button == 0 && state == 1) {
-        m_last_phi = m_phi;
-        m_last_theta = m_theta;
-    }
 }
 
 float clamp(float val, float low, float high) {
@@ -221,12 +213,20 @@ float clamp(float val, float low, float high) {
 }
 
 void Game::handle_mouse_move(int x, int y) {
-    float dphi = -2*M_PI*((float)(x - m_last_x)/m_window_width);
-    float dtheta = M_PI*((float)(y - m_last_y)/m_window_height);
+    if (m_warping) {
+        m_warping = false;
+        return;
+    }
+
+    float dphi = -2*M_PI*((float)(x-m_window_width/2)/m_window_width);
+    float dtheta = M_PI*((float)(y-m_window_height/2)/m_window_height);
 
     m_phi = m_last_phi + dphi;
     m_theta = m_last_theta + dtheta;
     m_theta = clamp(m_theta, -M_PI/3, M_PI/3);
+
+    m_last_phi = m_phi;
+    m_last_theta = m_theta;
 
     m_camera.set_direction(
         -sin(m_phi - M_PI_2)*cos(m_theta),
@@ -245,6 +245,10 @@ void Game::handle_mouse_move(int x, int y) {
             rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
         );
     }
+
+    m_warping = true;
+    if (m_focused)
+        glutWarpPointer(m_window_width/2, m_window_height/2);
 }
 
 void Game::handle_key_down(unsigned char key, int x, int y) {

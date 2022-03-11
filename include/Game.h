@@ -25,6 +25,7 @@ private:
     int m_last_x, m_last_y;
     float m_last_phi, m_last_theta;
     float m_phi, m_theta;
+    bool m_warping;
     
     bool m_key_state[256];
     bool m_show_axes;
