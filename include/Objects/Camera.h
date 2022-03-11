@@ -24,6 +24,8 @@ public:
 
     camera_mode mode() { return m_mode; }
     void set_mode(camera_mode mode) { m_mode = mode; }
+    void look_at(objects::Object object);
+    void look_at(v3f point);
 
     void init();
 };

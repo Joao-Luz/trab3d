@@ -584,25 +584,11 @@ void Game::display() {
     glLoadIdentity();
 
     if (m_camera.mode() == objects::Camera::orbital) {
-        gluLookAt(
-            m_camera.position().x,
-            m_camera.position().y,
-            m_camera.position().z,
-
-            m_player.center().x, 
-            m_player.center().y, 
-            m_player.center().z, 
-
-            m_camera.normal().x,
-            m_camera.normal().y,
-            m_camera.normal().z
-        );
+        m_camera.look_at(m_player.center());
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
         m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
-        glRotatef(m_camera.angle_yz(),1,0,0);
-        glRotatef(m_camera.angle_xz(),0,1,0);
-        glTranslatef(-m_player.center().x, -m_camera.position().y, -m_camera.position().z);
+        m_camera.look_at(m_camera.position() + m_camera.direction());
     }
 
     for (auto enemy : m_enemies) {
