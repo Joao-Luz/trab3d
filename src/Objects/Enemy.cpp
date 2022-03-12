@@ -126,4 +126,10 @@ v3f Enemy::gun_position() {
     return this->center() + v3f(0, m_height/4, 0) + (right*5*m_height/12) + (m_aim*m_height/2);
 }
 
+Shot Enemy::shoot(v3f player_position) {
+    v3f direction = (player_position - this->gun_position()).normalize();
+    Shot shot(this->gun_position(), direction);
+    return shot;
+}
+
 }

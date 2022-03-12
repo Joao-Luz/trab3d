@@ -3,6 +3,7 @@
 #include "Arena.h"
 #include "./Box.h"
 #include "./Character.h"
+#include "./Shot.h"
 
 namespace objects {
 
@@ -16,6 +17,7 @@ public:
 
     void plataform_collision(Box plataform, float dt);
     void arena_collision(Arena arena, float dt);
+    Shot shoot(v3f player_position);
     v3f gun_position();
     void display();
 };

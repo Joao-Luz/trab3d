@@ -1,14 +1,16 @@
 #pragma once
 
+#include <list>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
+#include "Arena.h"
 #include "Objects/Camera.h"
+#include "Objects/Enemy.h"
 #include "Objects/Object.h"
 #include "Objects/Player.h"
-#include "Objects/Enemy.h"
-#include "Arena.h"
+#include "Objects/Shot.h"
 
 class Game {
 private:
@@ -21,6 +23,7 @@ private:
     objects::Camera m_camera;
     objects::Player m_player;
     std::vector<objects::Enemy> m_enemies;
+    std::list<objects::Shot> m_shots;
 
     int m_last_x, m_last_y;
     float m_last_phi, m_last_theta;
@@ -42,7 +45,8 @@ private:
     void handle_key_state();
     void handle_mouse_state();
     void handle_player_movement();
-    void handle_enemy_movement(objects::Character* enemy);
+    void handle_enemy_movement(objects::Enemy* enemy);
+    bool handle_shot_movement(objects::Shot* shot);
     void add_enemy(float x, float y, float z, float height, float radius);
 public:
     Game();

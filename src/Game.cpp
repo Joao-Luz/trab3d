@@ -206,6 +206,12 @@ void Game::run() {
 
 void Game::handle_mouse_click(int button, int state, int x, int y) {
     m_mouse_state[button] = !state;
+
+    if (button == 0 && state == 0) {
+        auto shot = m_player.shoot();
+        shot.set_max_velocity(m_player.max_velocity()*3);
+        m_shots.push_back(shot);
+    }
 }
 
 float clamp(float val, float low, float high) {
@@ -357,16 +363,21 @@ void Game::handle_player_movement() {
     m_camera.translate(displacement);
 }
 
-void Game::handle_enemy_movement(objects::Character* enemy) {
+void Game::handle_enemy_movement(objects::Enemy* enemy) {
     
     // choose a random direction
     if (enemy->clock() <= 0) {
-        if ((float)rand()/RAND_MAX < 0.6) {
+        float random = (float)rand()/RAND_MAX;
+        if (random < 0.25) {
             v3f velocity = (v3f){ (float)(rand()%10+1), 0, (float)(rand()%10+1) }.normalize();
             enemy->set_velocity(velocity * enemy->max_velocity());
-        } else {
+        } else if (random < 0.50) {
             enemy->set_velocity_x(0);
             enemy->set_velocity_y(0);
+        } else {
+            auto shot = enemy->shoot(m_player.center());
+            shot.set_max_velocity(m_player.max_velocity()*3);
+            m_shots.push_back(shot);
         }
         enemy->set_clock((float)(rand()%3 + 3));
     }
@@ -402,14 +413,59 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
     }
 }
 
+bool Game::handle_shot_movement(objects::Shot* shot) {
+
+    // arena
+    if (shot->arena_collision(m_arena, m_dt)) return true;
+
+    // enemies
+    for (int i = 0; i < m_enemies.size(); i++) {
+        if (shot->character_collision(m_enemies[i], m_dt)) {
+            m_enemies[i].set_alive(false);
+            return true;
+        }
+    }
+
+    // player
+    if (shot->character_collision(m_player, m_dt)) {
+        m_player.set_alive(false);
+        return true;
+    }
+
+    // plataforms
+    for (auto plataform : m_arena.plataforms()) {
+        if (shot->plataform_collision(plataform, m_dt)) {
+            return true;
+        }
+    }
+
+    v3f displacement = shot->direction() * shot->max_velocity() * m_dt;
+    shot->translate(displacement);
+    return false;
+}
+
 void Game::update(float dt) {
     m_dt = dt;
     handle_key_state();
     handle_mouse_state();
-    handle_player_movement();
+
+    if (m_player.alive()) {
+        handle_player_movement();
+    }
+
     for (int i = 0; i < m_enemies.size(); i++) {
+        if (!m_enemies[i].alive()) continue;
+
         m_enemies[i].increase_clock(-dt);
         handle_enemy_movement(&m_enemies[i]);
+    }
+    for (auto it = m_shots.begin(); it != m_shots.end();) {
+        auto shot_ptr = &*it;
+        if (handle_shot_movement(shot_ptr)) {
+            it = m_shots.erase(it);
+        } else {
+            it++;
+        }
     }
 }
 
@@ -427,7 +483,6 @@ void Game::display() {
             rho*sin(m_theta) + m_player.center().y + m_player.height()/2,
             rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
         );
-        m_camera.look_at(m_player.center() + (v3f){0, m_player.height()/2, 0});
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
         m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
@@ -435,18 +490,23 @@ void Game::display() {
     else if (m_camera.mode() == objects::Camera::aiming) {
         m_camera.set_position(m_player.gun_position());
     }
-        m_camera.look_at(m_camera.position() + m_camera.direction());
-    }
+    m_camera.look_at(m_camera.position() + m_camera.direction());
 
     for (auto enemy : m_enemies) {
-        enemy.display();
+        if (enemy.alive())
+            enemy.display();
+    }
+
+    for (auto shot : m_shots) {
+        shot.display();
     }
 
     m_arena.set_active_lights(m_active_lights);
     m_arena.set_show_axes(m_show_axes);
     m_arena.display();
 
-    // m_player.set_angle_xz(m_xz);
-    m_player.display();
-    m_player.set_show_axes(m_show_axes);
+    if (m_player.alive()) {
+        m_player.display();
+        m_player.set_show_axes(m_show_axes);
+    }
 }

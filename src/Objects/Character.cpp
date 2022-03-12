@@ -19,11 +19,17 @@ Character::Character(float x, float y, float z, float height, float radius) : Ob
     m_clock = 0.0f;
     m_direction = {1, 0, 0};
     m_aim = {1, 0, 0};
+    m_alive = true;
 }
 
 v3f Character::center() {
     Box body(m_position, {m_height/2, m_height, m_height/2});
     return body.center();
+}
+
+Shot Character::shoot() {
+    Shot shot(this->gun_position(), m_aim);
+    return shot;
 }
 
 }

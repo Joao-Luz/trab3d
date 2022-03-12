@@ -3,6 +3,7 @@
 #include "Arena.h"
 #include "./Box.h"
 #include "./Object.h"
+#include "./Shot.h"
 #include "VectorMath.h"
 
 namespace objects {
@@ -18,6 +19,7 @@ protected:
     v3f m_aim;
 
     bool m_grounded;
+    bool m_alive;
 public:
     Character(float x, float y, float z, float height, float radius);
 
@@ -47,6 +49,9 @@ public:
     bool grounded() { return m_grounded; }
     void set_grounded(float grounded) { m_grounded = grounded; }
 
+    bool alive() { return m_alive; }
+    void set_alive(float alive) { m_alive = alive; }
+
     void set_center(v3f position) { m_position = position - (center() - m_position); }
     void set_center(float x, float y, float z) { set_center({x, y, z}); }
     void set_center_x(float x) { set_center({x, center().y, center().z}); }
@@ -58,6 +63,7 @@ public:
     virtual v3f gun_position() { return m_position; }
     virtual void display() {}
     v3f center();
+    Shot shoot();
 };
 
 }
