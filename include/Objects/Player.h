@@ -16,6 +16,7 @@ public:
     void plataform_collision(Box plataform, float dt);
     void arena_collision(Arena arena, float dt);
     void enemy_collision(Enemy* enemy, float dt);
+    v3f gun_position();
     void display();
 };
 

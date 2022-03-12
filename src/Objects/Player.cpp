@@ -145,4 +145,10 @@ void Player::arena_collision(Arena arena, float dt) {
 
 }
 
+v3f Player::gun_position() {
+    v3f right = m_direction.cross({0, 1, 0}).normalize();
+
+    return this->center() + v3f(0, m_height/4, 0) + (right*5*m_height/12) + (m_aim*m_height/2);
+}
+
 }

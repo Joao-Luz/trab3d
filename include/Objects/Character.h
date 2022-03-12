@@ -55,7 +55,7 @@ public:
 
     virtual void plataform_collision(Box plataform, float dt) {}
     virtual void arena_collision(Arena arena, float dt) {}
-
+    virtual v3f gun_position() { return m_position; }
     virtual void display() {}
     v3f center();
 };
