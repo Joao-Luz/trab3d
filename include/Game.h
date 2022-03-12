@@ -28,6 +28,7 @@ private:
     bool m_warping;
     
     bool m_key_state[256];
+    bool m_mouse_state[3];
     bool m_show_axes;
     bool m_active_lights[8];
     float m_clock;
@@ -39,6 +40,7 @@ private:
     void load_arena(std::string path);
     void load_texture(std::string path, std::string name);
     void handle_key_state();
+    void handle_mouse_state();
     void handle_player_movement();
     void handle_enemy_movement(objects::Character* enemy);
     void add_enemy(float x, float y, float z, float height, float radius);

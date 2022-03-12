@@ -17,6 +17,7 @@ Game::Game() {
 
     for (int i = 0; i < 256; i++) m_key_state[i] = false;
     for (int i = 0; i < 8; i++) m_active_lights[i] = false;
+    for (int i = 0; i < 3; i++) m_mouse_state[i] = false;
     m_show_axes = false;
     m_textures = std::unordered_map<std::string, int>();
     m_enemies = std::vector<objects::Enemy>();
@@ -204,6 +205,7 @@ void Game::run() {
 }
 
 void Game::handle_mouse_click(int button, int state, int x, int y) {
+    m_mouse_state[button] = !state;
 }
 
 float clamp(float val, float low, float high) {
@@ -323,6 +325,14 @@ void Game::handle_key_state() {
     m_player.set_velocity_y(jump_velocity);
 }
 
+void Game::handle_mouse_state() {
+    if (m_mouse_state[GLUT_RIGHT_BUTTON] && m_camera.mode() == objects::Camera::first_person) {
+        m_camera.set_mode(objects::Camera::aiming);
+    } else if(!m_mouse_state[GLUT_RIGHT_BUTTON] && m_camera.mode() == objects::Camera::aiming) {
+        m_camera.set_mode(objects::Camera::first_person);
+    }
+}
+
 void Game::handle_player_movement() {
     m_player.increase_velocity(0, -m_gravity*m_dt, 0);
 
@@ -395,6 +405,7 @@ void Game::handle_enemy_movement(objects::Character* enemy) {
 void Game::update(float dt) {
     m_dt = dt;
     handle_key_state();
+    handle_mouse_state();
     handle_player_movement();
     for (int i = 0; i < m_enemies.size(); i++) {
         m_enemies[i].increase_clock(-dt);
@@ -420,6 +431,10 @@ void Game::display() {
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
         m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
+    }
+    else if (m_camera.mode() == objects::Camera::aiming) {
+        m_camera.set_position(m_player.gun_position());
+    }
         m_camera.look_at(m_camera.position() + m_camera.direction());
     }
 
