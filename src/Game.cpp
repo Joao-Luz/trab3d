@@ -27,6 +27,7 @@ Game::Game() {
     m_warping = false;
     m_phi = m_theta = 0;
     m_clock = 0;
+    m_free_camera = false;
 
     m_dt = 0;
     m_gravity = 200;
@@ -207,7 +208,7 @@ void Game::run() {
 void Game::handle_mouse_click(int button, int state, int x, int y) {
     m_mouse_state[button] = !state;
 
-    if (button == 0 && state == 0) {
+    if (button == 0 && state == 0 && m_player.alive()) {
         auto shot = m_player.shoot();
         shot.set_max_velocity(m_player.max_velocity()*3);
         m_shots.push_back(shot);
@@ -242,9 +243,11 @@ void Game::handle_mouse_move(int x, int y) {
         -cos(m_theta)*cos(m_phi - M_PI_2)
     );
 
-    v3f player_direction = { m_camera.direction().x, 0, m_camera.direction().z };
-    m_player.set_direction(player_direction.normalize());
-    m_player.set_aim(m_camera.direction());
+    if (m_free_camera) {
+        v3f player_direction = { m_camera.direction().x, 0, m_camera.direction().z };
+        m_player.set_direction(player_direction.normalize());
+        m_player.set_aim(m_camera.direction());
+    }
 
     m_warping = true;
     glutWarpPointer(m_window_width/2, m_window_height/2);
@@ -265,6 +268,8 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
                 rho*sin(m_theta) + m_player.center().y,
                 rho*cos(m_theta)*cos(m_phi - M_PI_2) + m_player.center().z
             );
+        } else {
+            m_free_camera = false;
         }
     }
 
@@ -279,8 +284,14 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
     if (key >= '0' && key <= '9') {
         int light_id = key-'0'-1;
         m_active_lights[light_id] = !m_active_lights[light_id]; 
+        m_arena.set_active_lights(m_active_lights);
     }
-    m_arena.set_active_lights(m_active_lights);
+
+    if (key == 't') {
+        if (m_camera.mode() == objects::Camera::orbital) {
+            m_free_camera = !m_free_camera;
+        }
+    }
 }
 
 void Game::handle_key_up(unsigned char key, int x, int y) {
@@ -420,6 +431,7 @@ bool Game::handle_shot_movement(objects::Shot* shot) {
 
     // enemies
     for (int i = 0; i < m_enemies.size(); i++) {
+        if (!m_enemies[i].alive()) continue;
         if (shot->character_collision(m_enemies[i], m_dt)) {
             m_enemies[i].set_alive(false);
             return true;
@@ -427,7 +439,7 @@ bool Game::handle_shot_movement(objects::Shot* shot) {
     }
 
     // player
-    if (shot->character_collision(m_player, m_dt)) {
+    if (m_player.alive() && shot->character_collision(m_player, m_dt)) {
         m_player.set_alive(false);
         return true;
     }

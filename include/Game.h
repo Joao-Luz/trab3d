@@ -29,6 +29,7 @@ private:
     float m_last_phi, m_last_theta;
     float m_phi, m_theta;
     bool m_warping;
+    bool m_free_camera;
     
     bool m_key_state[256];
     bool m_mouse_state[3];
