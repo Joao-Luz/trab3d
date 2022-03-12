@@ -49,6 +49,7 @@ private:
     void handle_enemy_movement(objects::Enemy* enemy);
     bool handle_shot_movement(objects::Shot* shot);
     void add_enemy(float x, float y, float z, float height, float radius);
+    void reset();
 public:
     Game();
     ~Game() {}

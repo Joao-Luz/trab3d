@@ -20,6 +20,7 @@ Character::Character(float x, float y, float z, float height, float radius) : Ob
     m_direction = {1, 0, 0};
     m_aim = {1, 0, 0};
     m_alive = true;
+    m_initial_position = m_position;
 }
 
 v3f Character::center() {

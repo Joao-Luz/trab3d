@@ -17,6 +17,7 @@ protected:
     float m_clock;
 
     v3f m_aim;
+    v3f m_initial_position;
 
     bool m_grounded;
     bool m_alive;
@@ -45,6 +46,10 @@ public:
     v3f aim() { return m_aim; }
     void set_aim(v3f aim) { m_aim = aim; }
     void set_aim(float x, float y, float z) { m_aim = {x, y, z}; }
+
+    v3f initial_position() { return m_initial_position; }
+    void set_initial_position(v3f initial_position) { m_initial_position = initial_position; }
+    void set_initial_position(float x, float y, float z) { m_initial_position = {x, y, z}; }
 
     bool grounded() { return m_grounded; }
     void set_grounded(float grounded) { m_grounded = grounded; }

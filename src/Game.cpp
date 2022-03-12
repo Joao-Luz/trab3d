@@ -160,6 +160,16 @@ void Game::load(std::string level_file_path) {
     load_arena(level_file_path);
 }
 
+void Game::reset() {
+    for (int i = 0; i < m_enemies.size(); i++) {
+        m_enemies[i].set_alive(true);
+        m_enemies[i].set_position(m_enemies[i].initial_position());
+    }
+    m_shots.clear();
+    m_player.set_alive(true);
+    m_player.set_position(m_player.initial_position());
+}
+
 void Game::init(int window_width, int window_height, std::string window_name, int* argc, char** argv) {
     m_window_width = window_width;
     m_window_height = window_height;
@@ -292,6 +302,10 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
             m_free_camera = !m_free_camera;
         }
     }
+
+    if (key == 'r') {
+        this->reset();
+    }
 }
 
 void Game::handle_key_up(unsigned char key, int x, int y) {
@@ -363,7 +377,8 @@ void Game::handle_player_movement() {
 
     // enemy collisions
     for (int i = 0; i < m_enemies.size(); i++) {
-        m_player.enemy_collision(&m_enemies[i], m_dt);
+        if (m_enemies[i].alive())
+            m_player.enemy_collision(&m_enemies[i], m_dt);
     }
 
     if (m_player.velocity().y != 0) m_player.set_grounded(false);
