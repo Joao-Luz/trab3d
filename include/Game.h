@@ -36,6 +36,7 @@ private:
     bool m_show_axes;
     bool m_active_lights[8];
     float m_clock;
+    float m_orbital_zoom;
 
     float m_dt;
     float m_gravity;

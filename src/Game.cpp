@@ -28,6 +28,7 @@ Game::Game() {
     m_phi = m_theta = 0;
     m_clock = 0;
     m_free_camera = false;
+    m_orbital_zoom = 1.0;
 
     m_dt = 0;
     m_gravity = 200;
@@ -306,6 +307,16 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
     if (key == 'r') {
         this->reset();
     }
+
+    if (key == '+') {
+        m_orbital_zoom += 0.05;
+        m_orbital_zoom = min(m_orbital_zoom, 2.0);
+    }
+
+    if (key == '-') {
+        m_orbital_zoom -= 0.05;
+        m_orbital_zoom = max(m_orbital_zoom, 0.5);
+    }
 }
 
 void Game::handle_key_up(unsigned char key, int x, int y) {
@@ -504,7 +515,7 @@ void Game::display() {
 
     if (m_camera.mode() == objects::Camera::orbital) {
         // put in orbit around player
-        float rho = 3*m_player.height();
+        float rho = 3*m_player.height()*m_orbital_zoom;
         m_camera.set_position(
             rho*sin(m_phi - M_PI_2)*cos(m_theta) + m_player.center().x,
             rho*sin(m_theta) + m_player.center().y + m_player.height()/2,
