@@ -243,7 +243,7 @@ void Game::handle_mouse_move(int x, int y) {
         -cos(m_theta)*cos(m_phi - M_PI_2)
     );
 
-    if (m_free_camera) {
+    if (!m_free_camera) {
         v3f player_direction = { m_camera.direction().x, 0, m_camera.direction().z };
         m_player.set_direction(player_direction.normalize());
         m_player.set_aim(m_camera.direction());

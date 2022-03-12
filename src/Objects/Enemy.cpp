@@ -39,9 +39,12 @@ void Enemy::plataform_collision(Box plataform, float dt) {
         if ((this->center().y - m_height/2) > (plataform.center().y + height/2)) {
             set_velocity_y(0);
             set_grounded(true);
-            if ((this->center().x + m_radius) >= (center.x + width/2) ||
-                (this->center().x - m_radius) <= (center.x - width/2)) {
+            if ((this->center().x + m_radius) >= (center.x + width/2)) {
                 set_velocity_x(-m_velocity.x);
+                set_center_x(center.x + width/2 - m_radius);
+            } else if ((this->center().x - m_radius) <= (center.x - width/2)) {
+                set_velocity_x(-m_velocity.x);
+                set_center_x(center.x - width/2 + m_radius);
             }
         }
     }
