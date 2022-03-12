@@ -15,7 +15,7 @@ Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions) : Object(pa) {
 
     m_normal = (pb-pa).cross(pc-pb).normalize();
     m_direction = (pd-pa).normalize();
-    m_subdivisions = subdivisions;
+    m_subdivisions_x = m_subdivisions_y = subdivisions;
     m_scale = {(pb-pa).norm(), 0, (pc-pb).norm()};
 }
 
@@ -52,26 +52,26 @@ void Plane::display() {
     v3f c = m_points[2];
     v3f d = m_points[3];
 
-    for (int i = 0; i < m_subdivisions; i++) {
-        for (int j = 0; j < m_subdivisions; j++) {
+    for (int i = 0; i < m_subdivisions_x; i++) {
+        for (int j = 0; j < m_subdivisions_y; j++) {
 
-            v3f curr_a = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions)) - m_position;
-            v3f curr_b = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j)/m_subdivisions)) - m_position;
-            v3f curr_c = (a + (b-a)*((float)(i+1)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions)) - m_position;
-            v3f curr_d = (a + (b-a)*((float)(i)/m_subdivisions) + (d-a)*((float)(j+1)/m_subdivisions)) - m_position;
+            v3f curr_a = (a + (b-a)*((float)(i)/m_subdivisions_x) + (d-a)*((float)(j)/m_subdivisions_y)) - m_position;
+            v3f curr_b = (a + (b-a)*((float)(i+1)/m_subdivisions_x) + (d-a)*((float)(j)/m_subdivisions_y)) - m_position;
+            v3f curr_c = (a + (b-a)*((float)(i+1)/m_subdivisions_x) + (d-a)*((float)(j+1)/m_subdivisions_y)) - m_position;
+            v3f curr_d = (a + (b-a)*((float)(i)/m_subdivisions_x) + (d-a)*((float)(j+1)/m_subdivisions_y)) - m_position;
 
             glPushMatrix();
                 glBegin(GL_QUADS);
-                    glTexCoord2f (m_scale.x*(float)i/m_subdivisions/16, m_scale.z*(float)(j)/m_subdivisions/16);
+                    glTexCoord2f (m_scale.x*(float)i/m_subdivisions_x/16, m_scale.z*(float)(j)/m_subdivisions_y/16);
                     glVertex3f(curr_a.x, curr_a.y, curr_a.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions/16, m_scale.z*(float)(j)/m_subdivisions/16);
+                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/16, m_scale.z*(float)(j)/m_subdivisions_y/16);
                     glVertex3f(curr_b.x, curr_b.y, curr_b.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions/16, m_scale.z*(float)(j+1)/m_subdivisions/16);
+                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/16, m_scale.z*(float)(j+1)/m_subdivisions_y/16);
                     glVertex3f(curr_c.x, curr_c.y, curr_c.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i)/m_subdivisions/16, m_scale.z*(float)(j+1)/m_subdivisions/16);
+                    glTexCoord2f (m_scale.x*(float)(i)/m_subdivisions_x/16, m_scale.z*(float)(j+1)/m_subdivisions_y/16);
                     glVertex3f(curr_d.x, curr_d.y, curr_d.z);
                 glEnd();
             glPopMatrix();
