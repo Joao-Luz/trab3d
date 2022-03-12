@@ -57,30 +57,57 @@ void Arena::display() {
     }
 
     v4f specular = {0.2, 0.2, 0.2, 0.2};
-    float shininess = 0;
-    int subdivisions = 16;
+    float shininess = 1;
 
-    objects::Plane floor(
+    float ratio = m_dimensions.x/m_dimensions.z;
+    int sub_x = floor(m_dimensions.x/ratio);
+    int sub_y = floor(m_dimensions.z/ratio);
+
+    objects::Plane ground(
         {0, 0, m_dimensions.z},
         {m_dimensions.x, 0, m_dimensions.z},
         {m_dimensions.x, 0, 0},
         {0, 0, 0},
-        subdivisions
+        1
     );
-    floor.set_color(1, 1, 1, 1);
-    floor.set_show_axes(m_show_axes);
-    floor.set_specular(specular);
-    floor.set_shininess(shininess);
-    floor.set_texture(m_game->get_texture("floor"));
-    floor.display();
+    ground.set_subdivisions_x(sub_x);
+    ground.set_subdivisions_y(sub_y);
+    ground.set_color(1, 1, 1, 1);
+    ground.set_show_axes(m_show_axes);
+    ground.set_specular(specular);
+    ground.set_shininess(shininess);
+    ground.set_texture(m_game->get_texture("floor"));
+    ground.display();
+
+    ratio = m_dimensions.x/m_dimensions.y;
+    sub_x = floor(m_dimensions.x/ratio);
+    sub_y = floor(m_dimensions.y/ratio);
+
+    objects::Plane ceiling(
+        {0, m_dimensions.y, 0},
+        {m_dimensions.x, m_dimensions.y, 0},
+        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
+        {0, m_dimensions.y, m_dimensions.z},
+        1
+    );
+    ceiling.set_subdivisions_x(sub_x);
+    ceiling.set_subdivisions_y(sub_y);
+    ceiling.set_color(1, 1, 1, 1);
+    ceiling.set_show_axes(m_show_axes);
+    ceiling.set_specular(specular);
+    ceiling.set_shininess(shininess);
+    ceiling.set_texture(m_game->get_texture("floor"));
+    ceiling.display();
 
     objects::Plane left_wall(
         {0, 0, 0},
         {m_dimensions.x, 0, 0},
         {m_dimensions.x, m_dimensions.y, 0},
         {0, m_dimensions.y, 0},
-        subdivisions
+        1
     );
+    left_wall.set_subdivisions_x(sub_x);
+    left_wall.set_subdivisions_y(sub_y);
     left_wall.set_color(1, 1, 1, 1);
     left_wall.set_show_axes(m_show_axes);
     left_wall.set_specular(specular);
@@ -93,8 +120,10 @@ void Arena::display() {
         {0, 0, m_dimensions.z},
         {0, m_dimensions.y, m_dimensions.z},
         {m_dimensions.x, m_dimensions.y, m_dimensions.z},
-        subdivisions
+        1
     );
+    right_wall.set_subdivisions_x(sub_x);
+    right_wall.set_subdivisions_y(sub_y);
     right_wall.set_color(1, 1, 1, 1);
     right_wall.set_show_axes(m_show_axes);
     right_wall.set_specular(specular);
@@ -102,13 +131,18 @@ void Arena::display() {
     right_wall.set_texture(m_game->get_texture("wall"));
     right_wall.display();
 
+    ratio = m_dimensions.z/m_dimensions.y;
+    sub_x = floor(m_dimensions.z/ratio);
+    sub_y = floor(m_dimensions.y/ratio);
     objects::Plane back_wall(
         {0, 0, 0},
         {0, m_dimensions.y, 0},
         {0, m_dimensions.y, m_dimensions.z},
         {0, 0, m_dimensions.z},
-        subdivisions
+        1
     );
+    back_wall.set_subdivisions_x(sub_x);
+    back_wall.set_subdivisions_y(sub_y);
     back_wall.set_color(1, 1, 1, 1);
     back_wall.set_show_axes(m_show_axes);
     back_wall.set_specular(specular);
@@ -120,27 +154,15 @@ void Arena::display() {
         {m_dimensions.x, 0, m_dimensions.z},
         {m_dimensions.x, m_dimensions.y, m_dimensions.z},
         {m_dimensions.x, m_dimensions.y, 0},
-        subdivisions
+        1
     );
+    front_wall.set_subdivisions_x(sub_x);
+    front_wall.set_subdivisions_y(sub_y);
     front_wall.set_color(1, 1, 1, 1);
     front_wall.set_show_axes(m_show_axes);
     front_wall.set_specular(specular);
     front_wall.set_shininess(shininess);
     front_wall.display();
-
-    objects::Plane ceiling(
-        {0, m_dimensions.y, 0},
-        {m_dimensions.x, m_dimensions.y, 0},
-        {m_dimensions.x, m_dimensions.y, m_dimensions.z},
-        {0, m_dimensions.y, m_dimensions.z},
-        subdivisions
-    );
-    ceiling.set_color(1, 1, 1, 1);
-    ceiling.set_show_axes(m_show_axes);
-    ceiling.set_specular(specular);
-    ceiling.set_shininess(shininess);
-    ceiling.set_texture(m_game->get_texture("floor"));
-    ceiling.display();
 
     for (auto plataform : m_plataforms) {
         plataform.set_show_axes(m_show_axes);
