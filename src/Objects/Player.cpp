@@ -9,6 +9,14 @@
 
 namespace objects {
 
+Player::Player(float x, float y, float z, float height, float radius) : Character(x, y, z, height, radius) {
+    m_flashlight_on = false;
+    m_flashlight = LightSource(0, 0, 0, 7);
+    m_flashlight.set_spotlight(true);
+    m_flashlight.set_spot_direction((v3f){1, 0, 0});
+    m_flashlight.set_active(false);
+}
+
 void Player::plataform_collision(Box plataform, float dt) {
     v3f next_position = center() + m_velocity*dt;
 
@@ -98,8 +106,19 @@ void Player::display() {
             if (m_aim.y <= 0) angle = -angle;
 
             glRotatef(angle, 0, 0, 1);
-            Box arm({-m_height/12, 0, 0}, {m_height/2, m_height/6, m_height/6});
+            Box arm({0, 0, 0}, {m_height/2, m_height/6, m_height/6});
             arm.display();
+
+            if (m_flashlight_on) {
+                glTranslatef(3*m_height/4, 0, 0);
+                m_flashlight.set_position(0, 0, 0);
+                m_flashlight.set_direction(1, 0, 0);
+                m_flashlight.set_active(true);
+            } else {
+                m_flashlight.set_active(false);
+            }
+            m_flashlight.display();
+
         glPopMatrix();
 
         Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});

@@ -34,7 +34,7 @@ private:
     bool m_key_state[256];
     bool m_mouse_state[3];
     bool m_show_axes;
-    bool m_active_lights[8];
+    bool m_lights_on;
     float m_clock;
     float m_orbital_zoom;
 

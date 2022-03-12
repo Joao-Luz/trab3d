@@ -1,5 +1,6 @@
 #include "Arena.h"
 
+#include <cmath>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -44,13 +45,14 @@ void Arena::add_plataform(float x, float y, float width, float height) {
 void Arena::display() {
 
     for (int i = 0; i < 6; i++) {
-        m_lights[i].set_active(m_active_lights[i]);
+        m_lights[i].set_active(m_lights_on);
         m_lights[i].set_show_axes(m_show_axes);
         m_lights[i].display();
 
         objects::Box lamp(m_lights[i].position() - (v3f){5.5, 8, 0.125}, {11, 16, 0.25}, 8);
         lamp.set_show_axes(m_show_axes);
-        lamp.set_emission(1, 1, 0.7, 1);
+        if (m_lights_on)
+            lamp.set_emission(1, 1, 0.7, 1);
         lamp.set_texture(m_game->get_texture("light"));
         lamp.display();
 

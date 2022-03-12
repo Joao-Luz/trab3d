@@ -16,7 +16,6 @@
 Game::Game() {
 
     for (int i = 0; i < 256; i++) m_key_state[i] = false;
-    for (int i = 0; i < 8; i++) m_active_lights[i] = false;
     for (int i = 0; i < 3; i++) m_mouse_state[i] = false;
     m_show_axes = false;
     m_textures = std::unordered_map<std::string, int>();
@@ -29,6 +28,7 @@ Game::Game() {
     m_clock = 0;
     m_free_camera = false;
     m_orbital_zoom = 1.0;
+    m_lights_on = true;
 
     m_dt = 0;
     m_gravity = 200;
@@ -102,10 +102,6 @@ void Game::load_arena(std::string path) {
 
     m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/4);
     m_arena = Arena(arena_width, arena_height, this);
-
-    for (int i = 0; i < 8; i++) {
-        m_active_lights[i] = true;
-    }
 
     // camera
     v3f camera_position = {
@@ -292,10 +288,9 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
     if (key == 'p') {
         m_show_axes = !m_show_axes;
     }
-    if (key >= '0' && key <= '9') {
-        int light_id = key-'0'-1;
-        m_active_lights[light_id] = !m_active_lights[light_id]; 
-        m_arena.set_active_lights(m_active_lights);
+    if (key == 'n') {
+        m_lights_on = !m_lights_on;
+        m_player.set_flashlight_on(!m_lights_on);
     }
 
     if (key == 't') {
@@ -539,7 +534,7 @@ void Game::display() {
         shot.display();
     }
 
-    m_arena.set_active_lights(m_active_lights);
+    m_arena.set_lights_on(m_lights_on);
     m_arena.set_show_axes(m_show_axes);
     m_arena.display();
 
@@ -547,4 +542,5 @@ void Game::display() {
         m_player.display();
         m_player.set_show_axes(m_show_axes);
     }
+
 }

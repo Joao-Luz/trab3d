@@ -15,7 +15,7 @@ private:
     v3f m_dimensions;
     std::vector<objects::Box> m_plataforms;
     objects::LightSource m_lights[8];
-    bool m_active_lights[8];
+    bool m_lights_on;
     bool m_show_axes;
 
     Game* m_game;
@@ -32,9 +32,8 @@ public:
     float height() { return m_dimensions.y; }
     float length() { return m_dimensions.z; }
 
-    bool active_lights(int i) { return m_active_lights[i]; }
-    void set_active_lights(bool vals[8]) { for (int i = 0; i < 8; i++) m_active_lights[i] = vals[i]; }
-    void set_active_lights(bool val, int i) { m_active_lights[i] = val; }
+    bool lights_on() { return m_lights_on; }
+    void set_lights_on(bool val) { m_lights_on = val; }
 
     std::vector<objects::Box> plataforms() { return m_plataforms; }
 
