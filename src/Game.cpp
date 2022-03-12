@@ -9,6 +9,7 @@
 #include <GL/glut.h>
 
 #include "Textures.h"
+#include "Objects/Text.h"
 
 #define min(a, b) a < b ? a : b
 #define max(a, b) a > b ? a : b
@@ -29,6 +30,7 @@ Game::Game() {
     m_free_camera = false;
     m_orbital_zoom = 1.0;
     m_lights_on = true;
+    m_invincible_player = false;
 
     m_dt = 0;
     m_gravity = 200;
@@ -165,6 +167,7 @@ void Game::reset() {
     m_shots.clear();
     m_player.set_alive(true);
     m_player.set_position(m_player.initial_position());
+    m_player.set_won(false);
 }
 
 void Game::init(int window_width, int window_height, std::string window_name, int* argc, char** argv) {
@@ -312,6 +315,10 @@ void Game::handle_key_down(unsigned char key, int x, int y) {
         m_orbital_zoom -= 0.05;
         m_orbital_zoom = max(m_orbital_zoom, 0.5);
     }
+
+    if (key == 'i') {
+        m_invincible_player = !m_invincible_player;
+    }
 }
 
 void Game::handle_key_up(unsigned char key, int x, int y) {
@@ -368,6 +375,12 @@ void Game::handle_mouse_state() {
     } else if(!m_mouse_state[GLUT_RIGHT_BUTTON] && m_camera.mode() == objects::Camera::aiming) {
         m_camera.set_mode(objects::Camera::first_person);
     }
+}
+
+void Game::kill_player() {
+    if (m_invincible_player) return;
+
+    m_player.set_alive(false);
 }
 
 void Game::handle_player_movement() {
@@ -461,7 +474,7 @@ bool Game::handle_shot_movement(objects::Shot* shot) {
 
     // player
     if (m_player.alive() && shot->character_collision(m_player, m_dt)) {
-        m_player.set_alive(false);
+        kill_player();
         return true;
     }
 
@@ -482,7 +495,7 @@ void Game::update(float dt) {
     handle_key_state();
     handle_mouse_state();
 
-    if (m_player.alive()) {
+    if (m_player.alive() && !m_player.won()) {
         handle_player_movement();
     }
 
@@ -507,6 +520,18 @@ void Game::display() {
    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    if (!m_player.alive() && !m_player.won()) {
+        objects::Text text(m_window_width/2, m_window_height/2, 0, "You Lose :(");
+        text.set_screen(m_window_width, m_window_height);
+        text.set_color(1, 0, 0, 1);
+        text.display();
+    } else if (m_player.won()) {
+        objects::Text text(m_window_width/2, m_window_height/2, 0, "You Win! :)");
+        text.set_screen(m_window_width, m_window_height);
+        text.set_color(0, 1, 0, 1);
+        text.display();
+    }
 
     if (m_camera.mode() == objects::Camera::orbital) {
         // put in orbit around player
@@ -538,7 +563,7 @@ void Game::display() {
     m_arena.set_show_axes(m_show_axes);
     m_arena.display();
 
-    if (m_player.alive()) {
+    if (m_player.alive() && !m_player.won()) {
         m_player.display();
         m_player.set_show_axes(m_show_axes);
     }

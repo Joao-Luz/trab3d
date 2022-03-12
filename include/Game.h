@@ -37,6 +37,7 @@ private:
     bool m_lights_on;
     float m_clock;
     float m_orbital_zoom;
+    bool m_invincible_player;
 
     float m_dt;
     float m_gravity;
@@ -50,6 +51,7 @@ private:
     void handle_enemy_movement(objects::Enemy* enemy);
     bool handle_shot_movement(objects::Shot* shot);
     void add_enemy(float x, float y, float z, float height, float radius);
+    void kill_player();
     void reset();
 public:
     Game();

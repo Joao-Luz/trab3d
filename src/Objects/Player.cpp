@@ -15,6 +15,7 @@ Player::Player(float x, float y, float z, float height, float radius) : Characte
     m_flashlight.set_spotlight(true);
     m_flashlight.set_spot_direction((v3f){1, 0, 0});
     m_flashlight.set_active(false);
+    m_won = false;
 }
 
 void Player::plataform_collision(Box plataform, float dt) {
@@ -131,32 +132,40 @@ void Player::display() {
 void Player::arena_collision(Arena arena, float dt) {
     v3f next_position = this->center() + m_velocity*dt;
 
+    // left
     if ((next_position.z - m_radius) < 0) {
         set_velocity_z(0);
         set_center_z(m_radius);
     }
 
+    // right
     if ((next_position.z + m_radius) > arena.length()) {
         set_velocity_z(0);
         set_center_z(arena.length() - m_radius);
     }
 
+    // back
     if ((next_position.x - m_radius) < 0) {
         set_velocity_x(0);
         set_center_x(m_radius);
     }
 
+    // front
     if ((next_position.x + m_radius) > arena.width()) {
         set_velocity_x(0);
         set_center_x(arena.width() - m_radius);
+        m_won = true;
+        m_alive = false;
     }
 
+    // bottom
     if ((next_position.y - m_height/2) < 0) {
         set_velocity_y(0);
         set_center_y(m_height/2);
         set_grounded(true);
     }
 
+    // top
     if ((next_position.y + m_height/2) > arena.height()) {
         set_velocity_y(0);
         set_center_y(arena.height() - m_height/2);
