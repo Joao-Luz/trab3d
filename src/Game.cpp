@@ -102,7 +102,7 @@ void Game::load_arena(std::string path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/4);
+    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/6);
     m_arena = Arena(arena_width, arena_height, this);
 
     // camera
@@ -129,7 +129,7 @@ void Game::load_arena(std::string path) {
         float x = std::stod(circ->Attribute("cx")) - base_x;
         float y = arena_height - (std::stod(circ->Attribute("cy")) - base_y);
         float height = 2*std::stod(circ->Attribute("r"));
-        float radius = height/4;
+        float radius = height/6;
         this->add_enemy(x, y, arena_height/4, height, radius);
     }
 }
