@@ -103,7 +103,6 @@ unsigned char* load_bitmap(std::string path, int* width_addr, int* height_addr) 
 	}
 
 	input.close();
-	delete pixels;
 
 	*width_addr = width;
 	*height_addr = height;
@@ -123,7 +122,6 @@ int Textures::load_texture(std::string path, std::string name) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap);
 
-	delete bitmap;
 
 	return id;
 }
