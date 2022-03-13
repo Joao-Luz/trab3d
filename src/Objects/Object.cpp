@@ -14,6 +14,7 @@ m_normal{normal},
 m_direction{direction} {
     m_scale = {1, 1, 1};
     m_velocity = {0 ,0, 0};
+    m_origin = {0, 0, 0};
 
     m_color = {1, 1, 1, 1};
     m_emission = {0, 0, 0, 0};

@@ -12,6 +12,7 @@ protected:
     v3f m_direction;
     v3f m_scale;
     v3f m_velocity;
+    v3f m_origin;
     
     v4f m_color;
     v4f m_emission;
@@ -62,6 +63,10 @@ public:
     void set_velocity_z(float vz) { m_velocity = {m_velocity.x, m_velocity.y, vz }; }
     void increase_velocity(v3f dv) { m_velocity = m_velocity + dv; }
     void increase_velocity(float x, float y, float z) { m_velocity = m_velocity + (v3f){x, y, z}; }
+
+    v3f origin() { return m_origin; }
+    void set_origin(v3f origin) { m_origin = origin; }
+    void set_origin(float x, float y, float z) { m_origin = {x, y, z}; }
 
     v4f color() { return m_color; }
     void set_color(v4f color) { m_color = color; }
