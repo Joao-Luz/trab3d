@@ -36,6 +36,7 @@ void Box::display() {
     glPushMatrix();
 
         glTranslatef(m_position.x, m_position.y, m_position.z);
+        glTranslatef(-m_scale.x*m_origin.x, -m_scale.y*m_origin.y, -m_scale.z*m_origin.z);
 
         glRotatef(m_angle.x,1,0,0);
         glRotatef(m_angle.y,0,1,0);
