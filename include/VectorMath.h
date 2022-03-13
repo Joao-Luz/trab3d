@@ -32,7 +32,11 @@ public:
     }
 
     v4f operator * (float scalar) {
-        return { this->x * scalar, this->y * scalar, this->z * scalar, this->w / scalar };
+        return { this->x * scalar, this->y * scalar, this->z * scalar, this->w * scalar };
+    }
+
+    friend std::ostream& operator << (std::ostream& os, v4f const& vec) { 
+        return os << "[ " << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << " ]";
     }
 
     float norm() {
