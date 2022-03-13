@@ -384,6 +384,8 @@ void Game::kill_player() {
 }
 
 void Game::handle_player_movement() {
+    m_player.update_current_animation(m_dt);
+
     m_player.increase_velocity(0, -m_gravity*m_dt, 0);
 
     // arena collisions
@@ -402,6 +404,17 @@ void Game::handle_player_movement() {
 
     if (m_player.velocity().y != 0) m_player.set_grounded(false);
 
+    if (!m_player.grounded()) {
+        m_player.set_current_animation("jumping");
+    } else if (m_player.velocity().x != 0 || m_player.velocity().z != 0) {
+        if (m_player.velocity().dot(m_player.direction()) < 0)
+            m_player.set_current_animation("backwards");
+        else
+            m_player.set_current_animation("running");
+    } else {
+        m_player.set_current_animation("still");
+    }
+
     v3f displacement = m_player.velocity() * m_dt;
 
     m_player.translate(displacement);
@@ -409,7 +422,8 @@ void Game::handle_player_movement() {
 }
 
 void Game::handle_enemy_movement(objects::Enemy* enemy) {
-    
+    enemy->update_current_animation(m_dt);
+
     // choose a random direction
     if (enemy->clock() <= 0) {
         float random = (float)rand()/RAND_MAX;
@@ -443,6 +457,15 @@ void Game::handle_enemy_movement(objects::Enemy* enemy) {
     v3f displacement = enemy->velocity() * m_dt;
 
     enemy->translate(displacement);
+
+    if (enemy->velocity().x != 0 || enemy->velocity().z != 0) {
+        if (enemy->velocity().dot(enemy->direction()) < 0)
+            enemy->set_current_animation("backwards");
+        else
+            enemy->set_current_animation("running");
+    } else {
+        enemy->set_current_animation("still");
+    }
 
     // look at player
     v3f direction = (m_player.center() - enemy->center());

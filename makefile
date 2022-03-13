@@ -8,6 +8,7 @@ IN_FILE := levels/arena_teste.svg
 all: $(TARGET)
 
 SRC = src/main.cpp \
+	  src/Animation.cpp \
 	  src/Arena.cpp \
 	  src/Game.cpp \
 	  src/Textures.cpp \
@@ -24,7 +25,8 @@ SRC = src/main.cpp \
 	  src/Objects/Text.cpp \
 	  lib/tinyxml2.cpp
 
-HEADERS = include/Arena.h \
+HEADERS = include/Animation.h \
+		  include/Arena.h \
 		  include/Game.h \
 		  include/Textures.h \
 		  include/VectorMath.h \

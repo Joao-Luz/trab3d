@@ -16,6 +16,87 @@ Player::Player(float x, float y, float z, float height, float radius) : Characte
     m_flashlight.set_spot_direction((v3f){1, 0, 0});
     m_flashlight.set_active(false);
     m_won = false;
+
+    m_animations = std::unordered_map<std::string, Animation*>();
+
+    Animation* running = new Animation(0.7);
+    running->add_keyframe(0   , {10, -10, 15, -90});
+    running->add_keyframe(0.16, {-30, 0, 95, -90});
+    running->add_keyframe(0.33 , {-35, -90, 30, 0});
+    running->add_keyframe(0.49, {15, -90, 10, -10});
+    running->add_keyframe(0.66, {95, -90, -30, 0});
+    running->add_keyframe(0.85, {30, 0, -35, -90});
+
+    m_animations.insert({"running", running});
+
+    Animation* backwards = new Animation(0.7);
+    backwards->add_keyframe(0   , {45, 0, -10, -95});
+    backwards->add_keyframe(0.16, {30, 0, 0, -90});
+    backwards->add_keyframe(0.33 , {15, -90, 10, -10});
+    backwards->add_keyframe(0.49, {-10, -95, 45, 0});
+    backwards->add_keyframe(0.66, {0, -90, 30, 0});
+    backwards->add_keyframe(0.85, {10, -10, 15, -90});
+
+    m_animations.insert({"backwards", backwards});
+
+    Animation* jumping = new Animation(1.2);
+    jumping->add_keyframe(0   , {45, -45, -10, -80});
+    jumping->add_keyframe(0.33, {40, -40, 40, -40});
+    jumping->add_keyframe(0.66 , {-10, -80, 45, -45});
+
+    m_animations.insert({"jumping", jumping});
+
+    Animation* still = new Animation(1);
+    still->add_keyframe(0   , {0, 0, 0, 0});
+
+    m_animations.insert({"still", still});
+
+    m_current_animation = still;
+
+    m_gun = Box({0, 0, 0}, {0.3, 0.11, 0.11});
+    m_gun.set_origin(0.3, 0, 0);
+    m_gun.set_color(0.1, 0.1, 0.1, 1);
+
+    m_head = Box({0, 0, 0}, {0.2, 0.2, 0.2});
+    m_head.set_origin(0.5, 0, 0.5);
+
+    m_body = Box({0, 0, 0}, {0.1, 0.4, 0.25});
+    m_body.set_origin(0.5, 0.5, 0.5);
+
+    m_upper_right_arm = Box({0, 0, 0}, {0.1, 0.2, 0.1});
+    m_upper_right_arm.set_origin(0.5, 1.0, 0);
+
+    m_lower_right_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
+    m_lower_right_arm.set_origin(0, 0, 0);
+
+    m_upper_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
+    m_upper_left_arm.set_origin(0, 1, 1);
+
+    m_lower_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
+    m_lower_left_arm.set_origin(0, 1, 1);
+    
+    m_upper_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
+    m_upper_right_leg.set_origin(0.5, 1, 0.5);
+
+    m_lower_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
+    m_lower_right_leg.set_origin(0.5, 1, 0.5);
+
+    m_upper_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
+    m_upper_left_leg.set_origin(0.5, 1, 0.5);
+
+    m_lower_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
+    m_lower_left_leg.set_origin(0.5, 1, 0.5);
+
+
+}
+
+void Player::set_current_animation(std::string name) {
+    auto new_animation = m_animations[name];
+    if (m_current_animation != nullptr && m_current_animation != new_animation) {
+        m_current_animation->stop();
+    }
+    
+    m_current_animation = new_animation;
 }
 
 void Player::plataform_collision(Box plataform, float dt) {
@@ -84,34 +165,51 @@ void Player::enemy_collision(Enemy* enemy, float dt) {
     }
 }
 
+void Player::update_current_animation(float dt) { 
+    m_current_animation->update(dt);
+}
+
 void Player::display() {
 
     glPushMatrix();
 
         v3f center = this->center();
 
-        glTranslatef(center.x, m_position.y, center.z);
+        glTranslatef(center.x, center.y, center.z);
 
         v3f rotation_vector = (v3f){1, 0, 0}.cross(m_direction);
         float angle = 180*acos(m_direction.normalize().dot({1, 0, 0}))/M_PI;
 
         glRotatef(angle, rotation_vector.x, rotation_vector.y, rotation_vector.z);
 
+        glScalef(m_height, m_height, m_height);
+        // body
         glPushMatrix();
-            glTranslatef(0, 3*m_height/4, m_height/4);
+            glTranslatef(0, 0.1, 0);
+            m_body.display();
+        glPopMatrix();
+
+        
+        glPushMatrix();
+            glTranslatef(0, 0.3, 0.125);
+
+            // rotate arm
             float cos = m_direction.dot(m_aim);
             if (cos > 1) cos = 1.0f;
             if (cos < -1) cos = -1.0f;
             angle = 180*acos(cos)/M_PI;
-
             if (m_aim.y <= 0) angle = -angle;
 
             glRotatef(angle, 0, 0, 1);
-            Box arm({0, 0, 0}, {m_height/2, m_height/6, m_height/6});
-            arm.display();
+            m_upper_right_arm.display();
+            glTranslatef(0, -0.2, 0);
+            m_lower_right_arm.display();
+
+            glTranslatef(0.2, 0.1, 0);
+            m_gun.display();
 
             if (m_flashlight_on) {
-                glTranslatef(3*m_height/4, 0, 0);
+                glTranslatef(0.21, 0, 0);
                 m_flashlight.set_position(0, 0, 0);
                 m_flashlight.set_direction(1, 0, 0);
                 m_flashlight.set_active(true);
@@ -119,12 +217,50 @@ void Player::display() {
                 m_flashlight.set_active(false);
             }
             m_flashlight.display();
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0, 0.3, -0.125);
+            // rotate arm
+            glRotatef(angle, 0, 0, 1);
+
+            glRotatef(-20, 0, 0, 1);
+            glRotatef(-20, 0, 1, 0);
+            m_upper_left_arm.display();
+            glTranslatef(0.2, 0, 0);
+            glRotatef(-60, 0, 1, 0);
+            m_lower_left_arm.display();
 
         glPopMatrix();
 
-        Box body({-m_scale.x/2, 0, -m_scale.z/2}, {m_height/2, m_height, m_height/2});
-        body.set_show_axes(m_show_axes);
-        body.display();
+        // head
+        glPushMatrix();
+            glTranslatef(0, 0.3, 0);
+            glRotatef(angle, 0, 0, 1);
+            m_head.display();
+        glPopMatrix();
+
+        v4f animation_angles = m_current_animation->current_angles();
+
+        // right leg
+        glPushMatrix();
+            glTranslatef(0, -0.1, 0.075);
+            glRotatef(animation_angles.x, 0, 0, 1);
+            m_upper_right_leg.display();
+            glTranslatef(0, -0.2, 0);
+            glRotatef(animation_angles.y, 0, 0, 1);
+            m_lower_right_leg.display();
+        glPopMatrix();
+
+        // left leg
+        glPushMatrix();
+            glTranslatef(0, -0.1, -0.075);
+            glRotatef(animation_angles.z, 0, 0, 1);
+            m_upper_left_leg.display();
+            glTranslatef(0, -0.2, 0);
+            glRotatef(animation_angles.w, 0, 0, 1);
+            m_lower_left_leg.display();
+        glPopMatrix();
 
     glPopMatrix();
 }
@@ -174,9 +310,9 @@ void Player::arena_collision(Arena arena, float dt) {
 }
 
 v3f Player::gun_position() {
-    v3f right = m_direction.cross({0, 1, 0}).normalize();
+    v3f right = {-m_direction.z, -m_direction.y, m_direction.x};
 
-    return this->center() + v3f(0, m_height/3, 0) + (right*m_height/3) + (m_aim*m_height/2);
+    return this->center() + (v3f(0, 0.25, 0) + (right*0.175) + (m_aim*0.2))*m_height;
 }
 
 }
