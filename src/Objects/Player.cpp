@@ -123,12 +123,13 @@ void Player::plataform_collision(Box plataform, float dt) {
         // top
         if ((this->center().y + m_height/2) < (plataform.center().y - height/2)) {
             this->set_velocity_y(0);
-        } else
+        } else {
 
         // bottom
-        if ((this->center().y - m_height/2) > (plataform.center().y + height/2)) {
+        // ((this->center().y) > (plataform.center().y + height/2 + m_height/2)) {
             this->set_velocity_y(0);
             this->set_grounded(true);
+            this->set_center_y(plataform.center().y + height/2 + m_height/2);
         }
     }
 }
