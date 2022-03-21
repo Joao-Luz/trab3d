@@ -102,7 +102,7 @@ void Game::load_arena(std::string path) {
     float arena_width = std::stod(arena_info->Attribute("width"));
     float arena_height = std::stod(arena_info->Attribute("height"));
 
-    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/6);
+    m_player = objects::Player(x-base_x, arena_height - ( y - base_y) - height/2, arena_height/4, height, height/6, this);
     m_arena = Arena(arena_width, arena_height, this);
 
     // camera
@@ -135,14 +135,14 @@ void Game::load_arena(std::string path) {
 }
 
 void Game::add_enemy(float x, float y, float z, float height, float radius) {
-    objects::Enemy enemy(x, y, z, height, radius);
+    objects::Enemy enemy(x, y, z, height, radius, this);
     enemy.set_max_velocity(enemy.height()*2);
     enemy.set_velocity((v3f){(float)(rand()%10), 0, (float)(rand()%10)}.normalize()*enemy.max_velocity());
     m_enemies.push_back(enemy);
 }
 
-void Game::load_texture(std::string path, std::string name) {
-    auto texture = new Texture(name, path);
+void Game::load_texture(std::string path, std::string name, bool box) {
+    auto texture = new Texture(name, path, box);
     m_textures.insert({name, texture});
 }
 
@@ -155,6 +155,12 @@ void Game::load(std::string level_file_path) {
     load_texture("assets/floor.bmp", "floor");
     load_texture("assets/block.bmp", "block");
     load_texture("assets/light.bmp", "light");
+    load_texture("assets/enemy_head.bmp", "enemy_head", true);
+    load_texture("assets/body.bmp", "body", true);
+    load_texture("assets/upper_leg.bmp", "upper_leg", true);
+    load_texture("assets/lower_leg.bmp", "lower_leg", true);
+    load_texture("assets/arms.bmp", "arms", true);
+    load_texture("assets/head.bmp", "head", true);
     load_arena(level_file_path);
 }
 

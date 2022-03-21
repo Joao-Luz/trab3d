@@ -5,11 +5,12 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Game.h"
 #include "Objects/Box.h"
 
 namespace objects {
 
-Enemy::Enemy(float x, float y, float z, float height, float radius) : Character(x, y, z, height, radius) {
+Enemy::Enemy(float x, float y, float z, float height, float radius, Game* game) : Character(x, y, z, height, radius, game) {
     m_animations = std::unordered_map<std::string, Animation*>();
 
     Animation* running = new Animation(0.7);
@@ -45,43 +46,43 @@ Enemy::Enemy(float x, float y, float z, float height, float radius) : Character(
 
     m_head = Box({0, 0, 0}, {0.2, 0.2, 0.2});
     m_head.set_origin(0.5, 0, 0.5);
-    m_head.set_color(1, 0.3, 0.2, 1);
+    m_head.set_texture(game->get_texture("enemy_head"));
 
     m_body = Box({0, 0, 0}, {0.1, 0.4, 0.25});
     m_body.set_origin(0.5, 0.5, 0.5);
-    m_body.set_color(1, 0.3, 0.2, 1);
+    m_body.set_color(1, 1, 1, 1);
 
     m_upper_right_arm = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_right_arm.set_origin(0.5, 1.0, 0);
-    m_upper_right_arm.set_color(1, 0.3, 0.2, 1);
+    m_upper_right_arm.set_color(1, 1, 1, 1);
 
     m_lower_right_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_lower_right_arm.set_origin(0, 0, 0);
-    m_lower_right_arm.set_color(1, 0.3, 0.2, 1);
+    m_lower_right_arm.set_color(1, 1, 1, 1);
 
     m_upper_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_upper_left_arm.set_origin(0, 1, 1);
-    m_upper_left_arm.set_color(1, 0.3, 0.2, 1);
+    m_upper_left_arm.set_color(1, 1, 1, 1);
 
     m_lower_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_lower_left_arm.set_origin(0, 1, 1);
-    m_lower_left_arm.set_color(1, 0.3, 0.2, 1);
+    m_lower_left_arm.set_color(1, 1, 1, 1);
     
     m_upper_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_right_leg.set_origin(0.5, 1, 0.5);
-    m_upper_right_leg.set_color(1, 0.3, 0.2, 1);
+    m_upper_right_leg.set_color(1, 1, 1, 1);
 
     m_lower_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_lower_right_leg.set_origin(0.5, 1, 0.5);
-    m_lower_right_leg.set_color(1, 0.3, 0.2, 1);
+    m_lower_right_leg.set_color(1, 1, 1, 1);
 
     m_upper_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_left_leg.set_origin(0.5, 1, 0.5);
-    m_upper_left_leg.set_color(1, 0.3, 0.2, 1);
+    m_upper_left_leg.set_color(1, 1, 1, 1);
 
     m_lower_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_lower_left_leg.set_origin(0.5, 1, 0.5);
-    m_lower_left_leg.set_color(1, 0.3, 0.2, 1);
+    m_lower_left_leg.set_color(1, 1, 1, 1);
 
 
 }

@@ -5,11 +5,12 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "Game.h"
 #include "Objects/Box.h"
 
 namespace objects {
 
-Player::Player(float x, float y, float z, float height, float radius) : Character(x, y, z, height, radius) {
+Player::Player(float x, float y, float z, float height, float radius, Game* game) : Character(x, y, z, height, radius, game) {
     m_flashlight_on = false;
     m_flashlight = LightSource(0, 0, 0, 7);
     m_flashlight.set_spotlight(true);
@@ -59,33 +60,48 @@ Player::Player(float x, float y, float z, float height, float radius) : Characte
 
     m_head = Box({0, 0, 0}, {0.2, 0.2, 0.2});
     m_head.set_origin(0.5, 0, 0.5);
+    m_head.set_texture(m_game->get_texture("head"));
+
+    m_pony_tail = Box({0, 0, 0}, {0.07, 0.2, 0.07});
+    m_pony_tail.set_origin(0.5, 1, 0.5);
+    m_pony_tail.set_color(0.1333, 0.1255, 0.2039, 1);
 
     m_body = Box({0, 0, 0}, {0.1, 0.4, 0.25});
     m_body.set_origin(0.5, 0.5, 0.5);
+    m_body.set_texture(m_game->get_texture("body"));
 
     m_upper_right_arm = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_right_arm.set_origin(0.5, 1.0, 0);
+    m_upper_right_arm.set_texture(m_game->get_texture("arms"));
 
     m_lower_right_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_lower_right_arm.set_origin(0, 0, 0);
+    m_lower_right_arm.set_texture(m_game->get_texture("arms"));
 
     m_upper_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_upper_left_arm.set_origin(0, 1, 1);
+    m_upper_left_arm.set_texture(m_game->get_texture("arms"));
 
     m_lower_left_arm = Box({0, 0, 0}, {0.2, 0.1, 0.1});
     m_lower_left_arm.set_origin(0, 1, 1);
+    m_lower_left_arm.set_texture(m_game->get_texture("arms"));
     
     m_upper_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_right_leg.set_origin(0.5, 1, 0.5);
+    m_upper_right_leg.set_texture(m_game->get_texture("upper_leg"));
 
     m_lower_right_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_lower_right_leg.set_origin(0.5, 1, 0.5);
+    m_lower_right_leg.set_texture(m_game->get_texture("lower_leg"));
 
     m_upper_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_upper_left_leg.set_origin(0.5, 1, 0.5);
+    m_upper_left_leg.set_texture(m_game->get_texture("upper_leg"));
 
     m_lower_left_leg = Box({0, 0, 0}, {0.1, 0.2, 0.1});
     m_lower_left_leg.set_origin(0.5, 1, 0.5);
+    m_lower_left_leg.set_texture(m_game->get_texture("lower_leg"));
+
 
 
 }
@@ -239,6 +255,9 @@ void Player::display() {
             glTranslatef(0, 0.3, 0);
             glRotatef(angle, 0, 0, 1);
             m_head.display();
+            glTranslatef(-0.1, 0.15, 0);
+            glRotatef(-30, 0, 0, 1);
+            m_pony_tail.display();
         glPopMatrix();
 
         v4f animation_angles = m_current_animation->current_angles();
