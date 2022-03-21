@@ -62,8 +62,8 @@ void Arena::display() {
     float shininess = 1;
 
     float ratio = m_dimensions.x/m_dimensions.z;
-    int sub_x = floor(m_dimensions.x/ratio);
-    int sub_y = floor(m_dimensions.z/ratio);
+    int sub_x = floor(m_dimensions.x/ratio)/2;
+    int sub_y = floor(m_dimensions.z/ratio)/2;
 
     objects::Plane ground(
         {0, 0, m_dimensions.z},
@@ -82,8 +82,8 @@ void Arena::display() {
     ground.display();
 
     ratio = m_dimensions.x/m_dimensions.y;
-    sub_x = floor(m_dimensions.x/ratio);
-    sub_y = floor(m_dimensions.y/ratio);
+    sub_x = floor(m_dimensions.x/ratio)/2;
+    sub_y = floor(m_dimensions.y/ratio)/2;
 
     objects::Plane ceiling(
         {0, m_dimensions.y, 0},
@@ -133,9 +133,9 @@ void Arena::display() {
     right_wall.set_texture(m_game->get_texture("wall"));
     right_wall.display();
 
-    ratio = m_dimensions.z/m_dimensions.y;
-    sub_x = floor(m_dimensions.z/ratio);
-    sub_y = floor(m_dimensions.y/ratio);
+    ratio = m_dimensions.y/m_dimensions.z;
+    sub_x = floor(m_dimensions.z/ratio)/2;
+    sub_y = floor(m_dimensions.y/ratio)/2;
     objects::Plane back_wall(
         {0, 0, m_dimensions.z},
         {0, 0, 0},
