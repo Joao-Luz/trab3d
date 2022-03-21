@@ -118,3 +118,60 @@ public:
         return (v3f){x, y, z} / this->norm();
     }
 };
+
+class v2f {
+private:
+
+public:
+    float x, y;
+
+    v2f() {}
+
+    v2f(float x, float y) {
+        this->x = x;
+        this->y = y;
+    };
+    ~v2f() {}
+
+    v2f operator + (v2f that) {
+        return { this->x + that.x, this->y + that.y };
+    }
+
+    v2f operator - (v2f that) {
+        return { this->x - that.x, this->y - that.y};
+    }
+
+    v2f operator / (float scalar) {
+        return { this->x / scalar, this->y / scalar};
+    }
+
+    v2f operator * (float scalar) {
+        return { this->x * scalar, this->y * scalar};
+    }
+
+    bool operator == (v2f that) {
+        return (this->x == that.x && this->y == that.y);
+    }
+
+    bool operator != (v2f that) {
+        return !(this->x == that.x && this->y == that.y);
+    }
+
+    
+
+    friend std::ostream& operator << (std::ostream& os, v2f const& vec) { 
+        return os << "[ " << vec.x << ", " << vec.y << " ]";
+    }
+
+    float dot(v2f that) {
+        return this->x*that.x + this->y*that.y;
+    }
+
+    float norm() {
+        return sqrt(this->x*this->x + this->y*this->y);
+    }
+
+    v2f normalize() {
+        return (v2f){x, y} / this->norm();
+    }
+};
