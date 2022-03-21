@@ -42,8 +42,13 @@ void Plane::display() {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//X
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//Y
 
-    if (m_texture != -1)
-        glBindTexture (GL_TEXTURE_2D, m_texture);
+    int width = 1;
+    int height = 1;
+    if (m_texture) {
+        glBindTexture (GL_TEXTURE_2D, m_texture->id());
+        width = m_texture->width()/2;
+        height = m_texture->height()/2;
+    }
     else
         glDisable(GL_TEXTURE_2D);
 
@@ -62,16 +67,16 @@ void Plane::display() {
 
             glPushMatrix();
                 glBegin(GL_QUADS);
-                    glTexCoord2f (m_scale.x*(float)i/m_subdivisions_x/16, m_scale.z*(float)(j)/m_subdivisions_y/16);
+                    glTexCoord2f (m_scale.x*(float)i/m_subdivisions_x/width, m_scale.z*(float)(j)/m_subdivisions_y/height);
                     glVertex3f(curr_a.x, curr_a.y, curr_a.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/16, m_scale.z*(float)(j)/m_subdivisions_y/16);
+                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/width, m_scale.z*(float)(j)/m_subdivisions_y/height);
                     glVertex3f(curr_b.x, curr_b.y, curr_b.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/16, m_scale.z*(float)(j+1)/m_subdivisions_y/16);
+                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/width, m_scale.z*(float)(j+1)/m_subdivisions_y/height);
                     glVertex3f(curr_c.x, curr_c.y, curr_c.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i)/m_subdivisions_x/16, m_scale.z*(float)(j+1)/m_subdivisions_y/16);
+                    glTexCoord2f (m_scale.x*(float)(i)/m_subdivisions_x/width, m_scale.z*(float)(j+1)/m_subdivisions_y/height);
                     glVertex3f(curr_d.x, curr_d.y, curr_d.z);
                 glEnd();
             glPopMatrix();

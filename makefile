@@ -11,7 +11,7 @@ SRC = src/main.cpp \
 	  src/Animation.cpp \
 	  src/Arena.cpp \
 	  src/Game.cpp \
-	  src/Textures.cpp \
+	  src/Texture.cpp \
 	  src/Objects/Axes.cpp \
 	  src/Objects/Box.cpp \
 	  src/Objects/Camera.cpp \
@@ -28,7 +28,7 @@ SRC = src/main.cpp \
 HEADERS = include/Animation.h \
 		  include/Arena.h \
 		  include/Game.h \
-		  include/Textures.h \
+		  include/Texture.h \
 		  include/VectorMath.h \
 		  include/Objects/Axes.h \
 		  include/Objects/Box.h \

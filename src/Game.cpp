@@ -8,7 +8,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "Textures.h"
+#include "Texture.h"
 #include "Objects/Text.h"
 
 #define min(a, b) a < b ? a : b
@@ -19,7 +19,7 @@ Game::Game() {
     for (int i = 0; i < 256; i++) m_key_state[i] = false;
     for (int i = 0; i < 3; i++) m_mouse_state[i] = false;
     m_show_axes = false;
-    m_textures = std::unordered_map<std::string, int>();
+    m_textures = std::unordered_map<std::string, Texture*>();
     m_enemies = std::vector<objects::Enemy>();
 
     m_last_x = m_last_y = 0;
@@ -142,13 +142,12 @@ void Game::add_enemy(float x, float y, float z, float height, float radius) {
 }
 
 void Game::load_texture(std::string path, std::string name) {
-    int id = Textures::load_texture(path, name);
-    m_textures.insert({name, id});
+    auto texture = new Texture(name, path);
+    m_textures.insert({name, texture});
 }
 
-int Game::get_texture(std::string name) {
-    int id = m_textures[name];
-    return id;
+Texture* Game::get_texture(std::string name) {
+    return m_textures[name];
 }
 
 void Game::load(std::string level_file_path) {

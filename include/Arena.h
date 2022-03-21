@@ -6,7 +6,7 @@
 #include "Objects/LightSource.h"
 #include "Objects/Plane.h"
 #include "VectorMath.h"
-#include "Textures.h"
+#include "Texture.h"
 
 class Game;
 

@@ -26,7 +26,7 @@ m_direction{direction} {
     m_show_axes = false;
 
     m_angle = {0, 0, 0};
-    m_texture = -1;
+    m_texture = nullptr;
 }
 
 Object::Object(v3f position) : Object(position, {0, 1, 0}, {1, 0, 0}) {}

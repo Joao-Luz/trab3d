@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Arena.h"
+#include "Texture.h"
 #include "Objects/Camera.h"
 #include "Objects/Enemy.h"
 #include "Objects/Object.h"
@@ -17,7 +18,7 @@ private:
     int m_window_width, m_window_height;
     std::string m_window_name;
 
-    std::unordered_map<std::string, int> m_textures;
+    std::unordered_map<std::string, Texture*> m_textures;
 
     Arena m_arena;
     objects::Camera m_camera;
@@ -59,7 +60,7 @@ public:
     
     void init(int window_width, int window_height, std::string window_name, int* argc, char** argv);
     void run();
-    int get_texture(std::string name);
+    Texture* get_texture(std::string name);
 
     void display();
     void handle_mouse_click(int button, int sate, int x, int y);

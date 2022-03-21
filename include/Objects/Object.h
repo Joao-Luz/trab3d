@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Texture.h"
 #include "../VectorMath.h"
 #include <string>
 
@@ -23,7 +24,7 @@ protected:
     bool m_show_axes;
     bool m_should_set_material;
 
-    int m_texture;
+    Texture* m_texture;
 
     void set_material();
 
@@ -104,7 +105,7 @@ public:
     void set_angle_xy(float angle) { m_angle.z = angle; }
 
     void set_texture(std::string name);
-    void set_texture(int texture) { m_texture = texture; }
+    void set_texture(Texture* texture) { m_texture = texture; }
 
     void display_axes();
 

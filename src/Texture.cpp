@@ -1,4 +1,4 @@
-#include "Textures.h"
+#include "Texture.h"
 
 #include <iostream>
 #include <cassert>
@@ -7,6 +7,13 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+Texture::Texture(std::string name, std::string path) : m_name{name}, m_path{path} {
+	auto texture = load_texture(m_path, m_name);
+	m_id = texture.m_id;
+	m_width = texture.m_width;
+	m_height = texture.m_height;
+}
 
 // Converts a four-character array to an integer, using little-endian form
 int to_int(const char *bytes) {
@@ -110,7 +117,8 @@ unsigned char* load_bitmap(std::string path, int* width_addr, int* height_addr) 
 	return pixels_formatted;
 }
 
-int Textures::load_texture(std::string path, std::string name) {
+Texture Texture::load_texture(std::string path, std::string name) {
+
 	int width, height;
 	unsigned char* bitmap = load_bitmap(path, &width, &height);
 	GLuint id;
@@ -122,6 +130,11 @@ int Textures::load_texture(std::string path, std::string name) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap);
 
-
-	return id;
+	Texture texture;
+	texture.m_name = name;
+	texture.m_path = path;
+	texture.m_id = id;
+	texture.m_width = width;
+	texture.m_height = height;
+	return texture;
 }
