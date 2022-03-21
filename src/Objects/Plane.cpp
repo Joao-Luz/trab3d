@@ -13,6 +13,11 @@ Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions) : Object(pa) {
     m_points[2] = pc;
     m_points[3] = pd;
 
+    m_tex_coordinates[0] = {0, 0};
+    m_tex_coordinates[1] = {1, 0};
+    m_tex_coordinates[2] = {1, 1};
+    m_tex_coordinates[3] = {0, 1};
+
     m_normal = (pb-pa).cross(pc-pb).normalize();
     m_direction = (pd-pa).normalize();
     m_subdivisions_x = m_subdivisions_y = subdivisions;
@@ -22,6 +27,12 @@ Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions) : Object(pa) {
 Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd) : Plane(pa, pb, pc, pd, 1) {}
 
 Plane::Plane(v3f points[4]) : Plane(points[0], points[1], points[2], points[3]) {}
+Plane::Plane(v3f points[4], v2f tex_coordinates[4]) : Plane(points[0], points[1], points[2], points[3]) {
+    m_tex_coordinates[0] = tex_coordinates[0];
+    m_tex_coordinates[1] = tex_coordinates[1];
+    m_tex_coordinates[3] = tex_coordinates[3];
+    m_tex_coordinates[4] = tex_coordinates[4];
+}
 
 v3f Plane::center() {
     return (m_points[0] + m_points[1] + m_points[2] + m_points[3])/4;
@@ -57,6 +68,11 @@ void Plane::display() {
     v3f c = m_points[2];
     v3f d = m_points[3];
 
+    v2f ta = m_tex_coordinates[0];
+    v2f tb = m_tex_coordinates[1];
+    v2f tc = m_tex_coordinates[2];
+    v2f td = m_tex_coordinates[3];
+
     for (int i = 0; i < m_subdivisions_x; i++) {
         for (int j = 0; j < m_subdivisions_y; j++) {
 
@@ -65,18 +81,23 @@ void Plane::display() {
             v3f curr_c = (a + (b-a)*((float)(i+1)/m_subdivisions_x) + (d-a)*((float)(j+1)/m_subdivisions_y)) - m_position;
             v3f curr_d = (a + (b-a)*((float)(i)/m_subdivisions_x) + (d-a)*((float)(j+1)/m_subdivisions_y)) - m_position;
 
+            v2f curr_ta = (ta + (tb-ta)*((float)(i)/m_subdivisions_x) + (td-ta)*((float)(j)/m_subdivisions_y));
+            v2f curr_tb = (ta + (tb-ta)*((float)(i+1)/m_subdivisions_x) + (td-ta)*((float)(j)/m_subdivisions_y));
+            v2f curr_tc = (ta + (tb-ta)*((float)(i+1)/m_subdivisions_x) + (td-ta)*((float)(j+1)/m_subdivisions_y));
+            v2f curr_td = (ta + (tb-ta)*((float)(i)/m_subdivisions_x) + (td-ta)*((float)(j+1)/m_subdivisions_y));
+
             glPushMatrix();
                 glBegin(GL_QUADS);
-                    glTexCoord2f (m_scale.x*(float)i/m_subdivisions_x/width, m_scale.z*(float)(j)/m_subdivisions_y/height);
+                    glTexCoord2f (m_scale.x*curr_ta.x/width, m_scale.z*curr_ta.y/height);
                     glVertex3f(curr_a.x, curr_a.y, curr_a.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/width, m_scale.z*(float)(j)/m_subdivisions_y/height);
+                    glTexCoord2f (m_scale.x*curr_tb.x/width, m_scale.z*curr_tb.y/height);
                     glVertex3f(curr_b.x, curr_b.y, curr_b.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i+1)/m_subdivisions_x/width, m_scale.z*(float)(j+1)/m_subdivisions_y/height);
+                    glTexCoord2f (m_scale.x*curr_tc.x/width, m_scale.z*curr_tc.y/height);
                     glVertex3f(curr_c.x, curr_c.y, curr_c.z);
 
-                    glTexCoord2f (m_scale.x*(float)(i)/m_subdivisions_x/width, m_scale.z*(float)(j+1)/m_subdivisions_y/height);
+                    glTexCoord2f (m_scale.x*curr_td.x/width, m_scale.z*curr_td.y/height);
                     glVertex3f(curr_d.x, curr_d.y, curr_d.z);
                 glEnd();
             glPopMatrix();

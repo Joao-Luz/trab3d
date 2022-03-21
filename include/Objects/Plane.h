@@ -8,11 +8,13 @@ namespace objects {
 class Plane : public Object {
 private:
     v3f m_points[4];
+    v2f m_tex_coordinates[4];
     int m_subdivisions_x, m_subdivisions_y;
 public:
     Plane(v3f pa, v3f pb, v3f pc, v3f pd);
     Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions);
     Plane(v3f points[4]);
+    Plane(v3f points[4], v2f tex_coordinates[4]);
 
     Plane() {}
     ~Plane() {}
