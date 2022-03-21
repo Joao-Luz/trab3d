@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Arena.h"
+#include "Texture.h"
+#include "VectorMath.h"
 #include "./Box.h"
 #include "./Object.h"
 #include "./Shot.h"
-#include "VectorMath.h"
+
+class Game;
 
 namespace objects {
 
@@ -19,10 +22,12 @@ protected:
     v3f m_aim;
     v3f m_initial_position;
 
+    Game* m_game;
+
     bool m_grounded;
     bool m_alive;
 public:
-    Character(float x, float y, float z, float height, float radius);
+    Character(float x, float y, float z, float height, float radius, Game* game);
 
     Character() {}
     ~Character() {}

@@ -17,7 +17,7 @@ private:
     bool m_won;
 
     Box m_gun;
-    Box m_head, m_body;
+    Box m_head, m_body, m_pony_tail;
     Box m_upper_right_arm, m_lower_right_arm;
     Box m_upper_left_arm, m_lower_left_arm;
     Box m_upper_right_leg, m_lower_right_leg;
@@ -26,7 +26,7 @@ private:
     std::unordered_map<std::string, Animation*> m_animations;
     Animation* m_current_animation;
 public:
-    Player(float x, float y, float z, float height, float radius);
+    Player(float x, float y, float z, float height, float radius, Game* game);
 
     Player() {}
     ~Player() {}

@@ -20,7 +20,7 @@ private:
     std::unordered_map<std::string, Animation*> m_animations;
     Animation* m_current_animation;
 public:
-    Enemy(float x, float y, float z, float height, float radius);
+    Enemy(float x, float y, float z, float height, float radius, Game* game);
 
     Enemy() {}
     ~Enemy() {}
