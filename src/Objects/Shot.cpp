@@ -56,15 +56,15 @@ bool Shot::arena_collision(Arena arena, float dt) {
 bool Shot::character_collision(Character character, float dt) {
     v3f velocity = this->direction()*this->max_velocity();
     v3f next_position = this->center() + velocity * dt;
+    v3f next_character_position = character.center() + character.velocity() * dt;
 
     float height = character.height();
     float radius = character.radius();
-    v3f center = character.center();
-    float distance = ((v3f){center.x, 0, center.z} - (v3f){m_position.x, 0, m_position.z}).norm();
+    float distance = ((v3f){next_character_position.x, 0, next_character_position.z} - (v3f){m_position.x, 0, m_position.z}).norm();
 
     if (distance < radius &&
-        next_position.y > center.y - height/2 &&
-        next_position.y < center.y + height/2 ) {
+        next_position.y > next_character_position.y - height/2 &&
+        next_position.y < next_character_position.y + height/2 ) {
         
         return true;
     } else {
