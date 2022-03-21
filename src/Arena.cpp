@@ -137,10 +137,10 @@ void Arena::display() {
     sub_x = floor(m_dimensions.z/ratio);
     sub_y = floor(m_dimensions.y/ratio);
     objects::Plane back_wall(
+        {0, 0, m_dimensions.z},
         {0, 0, 0},
         {0, m_dimensions.y, 0},
         {0, m_dimensions.y, m_dimensions.z},
-        {0, 0, m_dimensions.z},
         1
     );
     back_wall.set_subdivisions_x(sub_x);
@@ -149,6 +149,7 @@ void Arena::display() {
     back_wall.set_show_axes(m_show_axes);
     back_wall.set_specular(specular);
     back_wall.set_shininess(shininess);
+    back_wall.set_texture(m_game->get_texture("wall"));
     back_wall.display();
 
     objects::Plane front_wall(
@@ -164,6 +165,7 @@ void Arena::display() {
     front_wall.set_show_axes(m_show_axes);
     front_wall.set_specular(specular);
     front_wall.set_shininess(shininess);
+    front_wall.set_texture(m_game->get_texture("wall"));
     front_wall.display();
 
     for (auto plataform : m_plataforms) {
