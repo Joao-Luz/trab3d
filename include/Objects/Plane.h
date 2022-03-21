@@ -13,6 +13,7 @@ private:
 public:
     Plane(v3f pa, v3f pb, v3f pc, v3f pd);
     Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions);
+    Plane(v3f pa, v3f pb, v3f pc, v3f pd, v2f ta, v2f tb, v2f tc, v2f td, int subdivisions);
     Plane(v3f points[4]);
     Plane(v3f points[4], v2f tex_coordinates[4]);
 

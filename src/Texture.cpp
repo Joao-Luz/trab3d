@@ -8,8 +8,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-Texture::Texture(std::string name, std::string path) : m_name{name}, m_path{path} {
-	auto texture = load_texture(m_path, m_name);
+Texture::Texture(std::string name, std::string path, bool box) : m_name{name}, m_path{path}, m_box{box} {
+	auto texture = load_texture(m_path, m_name, box);
 	m_id = texture.m_id;
 	m_width = texture.m_width;
 	m_height = texture.m_height;
@@ -117,7 +117,7 @@ unsigned char* load_bitmap(std::string path, int* width_addr, int* height_addr) 
 	return pixels_formatted;
 }
 
-Texture Texture::load_texture(std::string path, std::string name) {
+Texture Texture::load_texture(std::string path, std::string name, bool box) {
 
 	int width, height;
 	unsigned char* bitmap = load_bitmap(path, &width, &height);
@@ -129,6 +129,11 @@ Texture Texture::load_texture(std::string path, std::string name) {
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap);
+
+	if (box) {
+		width /= 4;
+		height /= 3;
+	}
 
 	Texture texture;
 	texture.m_name = name;

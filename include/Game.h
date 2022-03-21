@@ -45,7 +45,7 @@ private:
 
     void load(std::string level_file_path);
     void load_arena(std::string path);
-    void load_texture(std::string path, std::string name);
+    void load_texture(std::string path, std::string name, bool box=false);
     void handle_key_state();
     void handle_mouse_state();
     void handle_player_movement();

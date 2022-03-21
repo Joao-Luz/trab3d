@@ -8,9 +8,10 @@ class Texture {
 private:
     std::string m_name, m_path;
     int m_id, m_width, m_height;
-    static Texture load_texture(std::string path, std::string name);
+    bool m_box;
+    static Texture load_texture(std::string path, std::string name, bool box=false);
 public:
-    Texture(std::string name, std::string path);
+    Texture(std::string name, std::string path, bool box=false);
 
     Texture() {}
     ~Texture() {}
@@ -20,4 +21,5 @@ public:
     int id() { return m_id; }
     int width() { return m_width; }
     int height() { return m_height; }
+    bool box() { return m_box; }
 };

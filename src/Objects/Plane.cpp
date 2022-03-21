@@ -7,22 +7,24 @@
 
 namespace objects {
 
-Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions) : Object(pa) {
+Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, v2f ta, v2f tb, v2f tc, v2f td, int subdivisions) : Object(pa) {
     m_points[0] = pa;
     m_points[1] = pb;
     m_points[2] = pc;
     m_points[3] = pd;
 
-    m_tex_coordinates[0] = {0, 0};
-    m_tex_coordinates[1] = {1, 0};
-    m_tex_coordinates[2] = {1, 1};
-    m_tex_coordinates[3] = {0, 1};
+    m_tex_coordinates[0] = ta;
+    m_tex_coordinates[1] = tb;
+    m_tex_coordinates[2] = tc;
+    m_tex_coordinates[3] = td;
 
     m_normal = (pb-pa).cross(pc-pb).normalize();
     m_direction = (pd-pa).normalize();
     m_subdivisions_x = m_subdivisions_y = subdivisions;
     m_scale = {(pb-pa).norm(), 0, (pc-pb).norm()};
 }
+
+Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd, int subdivisions) : Plane(pa, pb, pc, pd, {0, 0}, {1, 0}, {1, 1}, {0, 1}, subdivisions) {}
 
 Plane::Plane(v3f pa, v3f pb, v3f pc, v3f pd) : Plane(pa, pb, pc, pd, 1) {}
 
@@ -53,12 +55,30 @@ void Plane::display() {
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//X
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//Y
 
+    v2f ta = m_tex_coordinates[0];
+    v2f tb = m_tex_coordinates[1];
+    v2f tc = m_tex_coordinates[2];
+    v2f td = m_tex_coordinates[3];
     int width = 1;
     int height = 1;
+    float scale_x = m_scale.x;
+    float scale_z = m_scale.z;
     if (m_texture) {
         glBindTexture (GL_TEXTURE_2D, m_texture->id());
-        width = m_texture->width()/2;
-        height = m_texture->height()/2;
+        if (m_texture->box()) {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);//X
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);//Y
+            scale_x = 1;
+            scale_z = 1;
+        } else {
+            width = m_texture->width()/2;
+            height = m_texture->height()/2;
+            ta = {0, 0};
+            tb = {1, 0};
+            tc = {1, 1};
+            td = {0, 1};
+        }
+        
     }
     else
         glDisable(GL_TEXTURE_2D);
@@ -67,11 +87,6 @@ void Plane::display() {
     v3f b = m_points[1];
     v3f c = m_points[2];
     v3f d = m_points[3];
-
-    v2f ta = m_tex_coordinates[0];
-    v2f tb = m_tex_coordinates[1];
-    v2f tc = m_tex_coordinates[2];
-    v2f td = m_tex_coordinates[3];
 
     for (int i = 0; i < m_subdivisions_x; i++) {
         for (int j = 0; j < m_subdivisions_y; j++) {
@@ -88,16 +103,16 @@ void Plane::display() {
 
             glPushMatrix();
                 glBegin(GL_QUADS);
-                    glTexCoord2f (m_scale.x*curr_ta.x/width, m_scale.z*curr_ta.y/height);
+                    glTexCoord2f (scale_x*curr_ta.x/width, scale_z*curr_ta.y/height);
                     glVertex3f(curr_a.x, curr_a.y, curr_a.z);
 
-                    glTexCoord2f (m_scale.x*curr_tb.x/width, m_scale.z*curr_tb.y/height);
+                    glTexCoord2f (scale_x*curr_tb.x/width, scale_z*curr_tb.y/height);
                     glVertex3f(curr_b.x, curr_b.y, curr_b.z);
 
-                    glTexCoord2f (m_scale.x*curr_tc.x/width, m_scale.z*curr_tc.y/height);
+                    glTexCoord2f (scale_x*curr_tc.x/width, scale_z*curr_tc.y/height);
                     glVertex3f(curr_c.x, curr_c.y, curr_c.z);
 
-                    glTexCoord2f (m_scale.x*curr_td.x/width, m_scale.z*curr_td.y/height);
+                    glTexCoord2f (scale_x*curr_td.x/width, scale_z*curr_td.y/height);
                     glVertex3f(curr_d.x, curr_d.y, curr_d.z);
                 glEnd();
             glPopMatrix();
