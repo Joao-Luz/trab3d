@@ -42,12 +42,22 @@ void Box::display() {
         glRotatef(m_angle.y,0,1,0);
         glRotatef(m_angle.z,0,0,1);
 
+        float width = m_scale.z/(2*m_scale.x+2*m_scale.z);
+        float height = m_scale.y/(2*m_scale.x+m_scale.y);
+        float depth_h = m_scale.x/(2*m_scale.x+2*m_scale.z);
+        float depth_v = m_scale.x/(2*m_scale.x+m_scale.y);
+
         // bottom
         Plane bottom(
             {(v3f){0, 0, 0}},
             {(v3f){m_scale.x, 0, 0}},
             {(v3f){m_scale.x, 0, m_scale.z}},
             {(v3f){0, 0, m_scale.z}},
+
+            (v2f){depth_h, 0},
+            (v2f){depth_h+width, 0},
+            (v2f){depth_h+width, depth_v},
+            (v2f){depth_h, depth_v},
             m_faces_subdivisions
         );
         bottom.set_should_set_material(false);
@@ -61,6 +71,11 @@ void Box::display() {
             {(v3f){0, m_scale.y, m_scale.z}},
             {(v3f){m_scale.x, m_scale.y, m_scale.z}},
             {(v3f){m_scale.x, m_scale.y, 0}},
+
+            (v2f){depth_h, depth_v+height},
+            (v2f){depth_h+width, depth_v+height},
+            (v2f){depth_h+width, 2*depth_v+height},
+            (v2f){depth_h, 2*depth_v+height},
             m_faces_subdivisions
         );
         top.set_should_set_material(false);
@@ -73,19 +88,28 @@ void Box::display() {
             {(v3f){0, 0, m_scale.z}},
             {(v3f){0, m_scale.y, m_scale.z}},
             {(v3f){0, m_scale.y, 0}},
+
+            (v2f){2*depth_h+width, depth_v},
+            (v2f){2*depth_h+2*width, depth_v},
+            (v2f){2*depth_h+2*width, depth_v+height},
+            (v2f){2*depth_h+width, depth_v+height},
             m_faces_subdivisions
         );
         back.set_should_set_material(false);
         back.set_texture(m_texture);
         back.display();
-        // std::cout << back.direction().x << '\n';
 
         // front
         Plane front(
+            {(v3f){m_scale.x, 0, m_scale.z}},
             {(v3f){m_scale.x, 0, 0}},
             {(v3f){m_scale.x, m_scale.y, 0}},
             {(v3f){m_scale.x, m_scale.y, m_scale.z}},
-            {(v3f){m_scale.x, 0, m_scale.z}},
+
+            (v2f){depth_h, depth_v},
+            (v2f){depth_h+width, depth_v},
+            (v2f){depth_h+width, depth_v+height},
+            (v2f){depth_h, depth_v+height},
             m_faces_subdivisions
         );
         front.set_should_set_material(false);
@@ -94,10 +118,16 @@ void Box::display() {
 
         // left
         Plane left(
-            {(v3f){m_scale.x, 0, 0}},
             {(v3f){0, 0, 0}},
             {(v3f){0, m_scale.y, 0}},
             {(v3f){m_scale.x, m_scale.y, 0}},
+            {(v3f){m_scale.x, 0, 0}},
+
+
+            (v2f){0, depth_v},
+            (v2f){0, depth_v+height},
+            (v2f){depth_h, depth_v+height},
+            (v2f){depth_h, depth_v},
             m_faces_subdivisions
         );
         left.set_should_set_material(false);
@@ -106,10 +136,15 @@ void Box::display() {
 
         // right
         Plane right(
-            {(v3f){0, 0, m_scale.z}},
             {(v3f){m_scale.x, 0, m_scale.z}},
             {(v3f){m_scale.x, m_scale.y, m_scale.z}},
             {(v3f){0, m_scale.y, m_scale.z}},
+            {(v3f){0, 0, m_scale.z}},
+
+            (v2f){depth_h+width, depth_v},
+            (v2f){depth_h+width, depth_v+height},
+            (v2f){2*depth_h+width, depth_v+height},
+            (v2f){2*depth_h+width, depth_v},
             m_faces_subdivisions
         );
         right.set_should_set_material(false);
