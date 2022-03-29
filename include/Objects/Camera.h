@@ -18,7 +18,7 @@ public:
     camera_mode m_mode;
 
     Camera(float x, float y, float z);
-    Camera(v3f position, float fov = 90, float aspect = 1, float near = 1, float far = 500);
+    Camera(v3f position, float fov = 90, float aspect = 1, float near = 0.1, float far = 500);
     Camera() {}
     ~Camera() {}
 
