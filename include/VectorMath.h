@@ -106,6 +106,14 @@ public:
         return crossed.normalize();
     }
 
+    v3f rotate(float angle, v3f axis) {
+        angle = M_PI*angle/180;
+
+        axis = axis.normalize();
+
+        return (*this)*cos(angle) + axis.cross(*this)*sin(angle) + axis*(axis.dot(*this))*(1-cos(angle));
+    }
+
     float dot(v3f that) {
         return this->x*that.x + this->y*that.y + this->z*that.z;
     }
