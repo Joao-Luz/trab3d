@@ -46,7 +46,7 @@ By doing this, the program will be compiled and executed with the default `level
 - <kbd>N</kbd>: turn lights off/ turn flashlight on
 - Mouse movement: move the camera
 - <kbd>lmb</kbd>: shoot
-- <kbd>lmb</kbd>: when in first person, aim down the barrel while holding
+- <kbd>rmb</kbd>: when in first person, aim down the barrel while holding
 
 ### Making your own maps
 
