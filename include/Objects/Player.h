@@ -44,6 +44,7 @@ public:
     void arena_collision(Arena arena, float dt);
     void enemy_collision(Enemy* enemy, float dt);
     v3f gun_position();
+    v3f head_position();
     void display();
 };
 

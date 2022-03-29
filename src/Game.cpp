@@ -571,10 +571,12 @@ void Game::display() {
         );
     }
     else if (m_camera.mode() == objects::Camera::first_person) {
-        m_camera.set_position(m_player.center() + (v3f){0, m_player.height()/2, 0});
+        m_camera.set_position(m_player.head_position());
     }
     else if (m_camera.mode() == objects::Camera::aiming) {
-        m_camera.set_position(m_player.gun_position());
+        v3f right = {-m_player.direction().z, -m_player.direction().y, m_player.direction().x};
+        v3f up = m_player.aim().rotate(90, right);
+        m_camera.set_position(m_player.gun_position()+up*0.11*m_player.height());
     }
     m_camera.look_at(m_camera.position() + m_camera.direction());
 

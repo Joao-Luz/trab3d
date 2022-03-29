@@ -226,7 +226,7 @@ void Player::display() {
             m_gun.display();
 
             if (m_flashlight_on) {
-                glTranslatef(0.21, 0, 0);
+                glTranslatef(0.25, 0, 0);
                 m_flashlight.set_position(0, 0, 0);
                 m_flashlight.set_direction(1, 0, 0);
                 m_flashlight.set_active(true);
@@ -331,8 +331,16 @@ void Player::arena_collision(Arena arena, float dt) {
 
 v3f Player::gun_position() {
     v3f right = {-m_direction.z, -m_direction.y, m_direction.x};
+    v3f up = m_aim.rotate(90, right);
 
-    return this->center() + (v3f(0, 0.25, 0) + (right*0.175) + (m_aim*0.2))*m_height;
+    return this->center() + (v3f(0, 0.3, 0) + (right*0.175) - (up*0.05) + (m_aim*0.2))*m_height;
+}
+
+v3f Player::head_position() {
+    v3f right = {-m_direction.z, -m_direction.y, m_direction.x};
+    v3f up = m_aim.rotate(90, right);
+
+    return this->center() + ((v3f){0, 0.3, 0} + (m_aim*0.1) + (up*0.1))*m_height;
 }
 
 }
